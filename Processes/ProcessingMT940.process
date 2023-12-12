@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003">
+    <pd:name>Processes/ProcessingMT940.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>150</pd:startX>
+    <pd:startY>64</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>540</pd:endX>
+    <pd:endY>64</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1701986931008</pd:targetNamespace>
+    <pd:activity name="Java Code">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>333</pd:x>
+        <pd:y>69</pd:y>
+        <config>
+            <fileName>ProcessingMT940JavaCode</fileName>
+            <packageName>Processes.ProcessingMT940</packageName>
+            <fullsource>package Processes.ProcessingMT940;
+import java.util.*;
+import java.io.*;
+
+import com.prowidesoftware.swift.io.RJEReader;
+import com.prowidesoftware.swift.model.SwiftBlock1;
+import com.prowidesoftware.swift.model.SwiftBlock4;
+import com.prowidesoftware.swift.utils.Lib;
+import com.prowidesoftware.swift.model.SwiftMessage;
+import com.prowidesoftware.swift.model.mt.AbstractMT;
+import com.prowidesoftware.swift.model.SwiftTagListBlock;
+import com.prowidesoftware.swift.model.Tag;
+import com.prowidesoftware.swift.model.field.Field61;
+import com.prowidesoftware.swift.model.mt.mt9xx.MT940;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+public class ProcessingMT940JavaCode{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String out_put = "";
+	public String getout_put() {
+		return out_put;
+	}
+	public void setout_put(String val) {
+		out_put = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public ProcessingMT940JavaCode() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	Out : String out_put
+* Available Variables: DO NOT MODIFY *****/
+
+try {
+
+            //String filePath = "C:\\u01\\mt940-bancomer.txt"; // replace with your file path
+            String filePath = "C:\\u01\\SALI.00004523.009.TG-0014.F230403.0640086.txt";
+            //String filePath = "C:\\u01\\TT011120txt.txt";
+
+
+            RJEReader reader = new RJEReader(new File(filePath));
+
+            /*
+             * Iterate the reader
+             */
+            while (reader.hasNext()) {
+                /*
+                 * Read the message.
+                 */
+                //System.out.println(reader.next());
+                AbstractMT mt = reader.nextMT();
+                //System.out.println(mt);
+                SwiftMessage msg = mt.getSwiftMessage();
+                System.out.println("FINString: "+msg.getUnparsedTexts().size());
+
+                for(int i= 0; i&lt;msg.getUnparsedTexts().size();i++){
+                   //System.out.println(msg.getUnparsedTexts().getTextAsMessage(i));
+                   //msg = msg.getUnparsedTexts().getTextAsMessage(i);
+
+
+                   if(msg.getUnparsedTexts().getTextAsMessage(i).isType(940)) {
+                       MT940 mt940 = new MT940(msg.getUnparsedTexts().getTextAsMessage(i));
+                       SwiftBlock1 b1 = mt940.getSwiftMessage().getBlock1();
+                       //System.out.println("b1: " + b1);
+                       com.prowidesoftware.swift.model.SwiftBlock4 b4 = mt940.getSwiftMessage().getBlock4();
+
+                       Field61 tx = (Field61) b4.getField(Field61.AMOUNT);
+                       System.out.println("Reference Acc Owner: " + tx.getComponent(Field61.REFERENCE_FOR_THE_ACCOUNT_OWNER).substring(2));
+                       System.out.println("Bank Date: " + tx.getComponent(Field61.DATE));
+                       System.out.println("Entry Date: " + tx.getComponent(Field61.ENTRY_DATE));
+                       System.out.println("Amount: " + tx.getComponent(Field61.AMOUNT));
+                       System.out.println("DebitCredit Mark: " + tx.getComponent(Field61.DEBITCREDIT_MARK));
+                       if(tx.getComponent(Field61.DEBITCREDIT_MARK).equals("C")){
+                           System.out.println("PAGO ALUMNO");
+                       }else{
+                           System.out.println("OTROS");
+
+                       }
+
+                       System.out.println("------------------------------------------------------");
+                   }
+                }
+}
+	} catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+}
+}
+</fullsource>
+            <outputData>
+                <row>
+                    <fieldName>out_put</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </outputData>
+            <javaArchive>/Shared Resources/AliasLibrary.aliaslib</javaArchive>
+            <byteCode>
+                <class>
+                    <name>ProcessingMT940JavaCode</name>
+                    <byteCode>yv66vgAAADcAwgkALwBFCgAwAEYIAEcIAEgHAEkHAEoKAAYASwoABQBMCgAFAE0KAAUATgoAPgBPCQBQAFEKAD8AUgoAUwBUEgAAAFgKAFkAWgoAWwBcCgBbAF0KAFMAXgoAPwBfBwBgCgAVAGEKABUATwoAPwBiCgA/AGMJABwAZAoAQQBlBwBmCQAcAGcKABwAaAoAPQBpEgABAGsJABwAbBIAAgBrCQAcAG4SAAMAaxIABABrCQAcAHESAAUAawgAcwoAPQB0CAB1CAB2CAB3BwB4CgAtAHkHAHoHAHsBAAdvdXRfcHV0AQASTGphdmEvbGFuZy9TdHJpbmc7AQAKZ2V0b3V0X3B1dAEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEACnNldG91dF9wdXQBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAY8aW5pdD4BAAMoKVYBAAZpbnZva2UBAA1TdGFja01hcFRhYmxlBwB8BwB9BwB+BwB/BwCAAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBABxQcm9jZXNzaW5nTVQ5NDBKYXZhQ29kZS5qYXZhDAAxADIMADkAOgEAAAEANEM6XHUwMVxTQUxJLjAwMDA0NTIzLjAwOS5URy0wMDE0LkYyMzA0MDMuMDY0MDA4Ni50eHQBACZjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L2lvL1JKRVJlYWRlcgEADGphdmEvaW8vRmlsZQwAOQA4DAA5AIEMAIIAgwwAhACFDACGAIcHAIgMAIkAigwAiwCMBwCNDACOAI8BABBCb290c3RyYXBNZXRob2RzDwYAkAgAkQwAkgCTBwCUDACVADgHAJYMAJcAmAwAmQCaDACbAJwMAJ0AngEALmNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvbXQvbXQ5eHgvTVQ5NDAMADkAnwwAoAChDACiAKMMAKQApQwApgCnAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDYxDACoAKUMAKkAqgwAqwCqCACsDACSAK0MAK4ApQgArwwAsAClCACxCACyDACzAKUIALQBAAFDDAC1ALYBAAtQQUdPIEFMVU1OTwEABU9UUk9TAQA2LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tAQATamF2YS9sYW5nL0V4Y2VwdGlvbgwAtwA6AQAxUHJvY2Vzc2VzL1Byb2Nlc3NpbmdNVDk0MC9Qcm9jZXNzaW5nTVQ5NDBKYXZhQ29kZQEAEGphdmEvbGFuZy9PYmplY3QBABBqYXZhL2xhbmcvU3RyaW5nAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9tdC9BYnN0cmFjdE1UAQAsY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdE1lc3NhZ2UBACtjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2sxAQArY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrNAEAEShMamF2YS9pby9GaWxlOylWAQAHaGFzTmV4dAEAAygpWgEABm5leHRNVAEAMSgpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvbXQvQWJzdHJhY3RNVDsBAA9nZXRTd2lmdE1lc3NhZ2UBADAoKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTsBABBqYXZhL2xhbmcvU3lzdGVtAQADb3V0AQAVTGphdmEvaW8vUHJpbnRTdHJlYW07AQAQZ2V0VW5wYXJzZWRUZXh0cwEANCgpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvVW5wYXJzZWRUZXh0TGlzdDsBADBjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1VucGFyc2VkVGV4dExpc3QBAARzaXplAQAVKClMamF2YS9sYW5nL0ludGVnZXI7CgC4ALkBAAxGSU5TdHJpbmc6IAEBABdtYWtlQ29uY2F0V2l0aENvbnN0YW50cwEAJyhMamF2YS9sYW5nL0ludGVnZXI7KUxqYXZhL2xhbmcvU3RyaW5nOwEAE2phdmEvaW8vUHJpbnRTdHJlYW0BAAdwcmludGxuAQARamF2YS9sYW5nL0ludGVnZXIBAAhpbnRWYWx1ZQEAAygpSQEAB3ZhbHVlT2YBABYoSSlMamF2YS9sYW5nL0ludGVnZXI7AQAQZ2V0VGV4dEFzTWVzc2FnZQEAQyhMamF2YS9sYW5nL0ludGVnZXI7KUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTsBAAZpc1R5cGUBAAQoSSlaAQAxKExjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTspVgEACWdldEJsb2NrMQEALygpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazE7AQAJZ2V0QmxvY2s0AQAvKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrNDsBAAZBTU9VTlQBABNMamF2YS9sYW5nL0ludGVnZXI7AQAIZ2V0RmllbGQBADAoSSlMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDsBAB9SRUZFUkVOQ0VfRk9SX1RIRV9BQ0NPVU5UX09XTkVSAQAMZ2V0Q29tcG9uZW50AQAVKEkpTGphdmEvbGFuZy9TdHJpbmc7AQAJc3Vic3RyaW5nAQAWUmVmZXJlbmNlIEFjYyBPd25lcjogAQEAJihMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmc7AQAEREFURQEADEJhbmsgRGF0ZTogAQEACkVOVFJZX0RBVEUBAA1FbnRyeSBEYXRlOiABAQAJQW1vdW50OiABAQAQREVCSVRDUkVESVRfTUFSSwEAE0RlYml0Q3JlZGl0IE1hcms6IAEBAAZlcXVhbHMBABUoTGphdmEvbGFuZy9PYmplY3Q7KVoBAA9wcmludFN0YWNrVHJhY2UHALoMAJIAvgEAJGphdmEvbGFuZy9pbnZva2UvU3RyaW5nQ29uY2F0RmFjdG9yeQcAwAEABkxvb2t1cAEADElubmVyQ2xhc3NlcwEAmChMamF2YS9sYW5nL2ludm9rZS9NZXRob2RIYW5kbGVzJExvb2t1cDtMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL2ludm9rZS9NZXRob2RUeXBlO0xqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9pbnZva2UvQ2FsbFNpdGU7BwDBAQAlamF2YS9sYW5nL2ludm9rZS9NZXRob2RIYW5kbGVzJExvb2t1cAEAHmphdmEvbGFuZy9pbnZva2UvTWV0aG9kSGFuZGxlcwAhAC8AMAAAAAEABAAxADIAAAAEAAEAMwA0AAEANQAAAB0AAQABAAAABSq0AAGwAAAAAQA2AAAABgABAAAAHQABADcAOAABADUAAAAiAAIAAgAAAAYqK7UAAbEAAAABADYAAAAKAAIAAAAgAAUAIQABADkAOgABADUAAAArAAIAAQAAAAsqtwACKhIDtQABsQAAAAEANgAAAA4AAwAAACMABAAbAAoAJAABADsAOgACADUAAAI2AAUACgAAAU0SBEy7AAVZuwAGWSu3AAe3AAhNLLYACZkBLSy2AApOLbYACzoEsgAMGQS2AA22AA66AA8AALYAEAM2BRUFGQS2AA22AA62ABGiAPkZBLYADRUFuAAStgATEQOstgAUmQDduwAVWRkEtgANFQW4ABK2ABO3ABY6BhkGtgAXtgAYOgcZBrYAF7YAGToIGQiyABq2ABG2ABvAABw6CbIADBkJsgAdtgARtgAeBbYAH7oAIAAAtgAQsgAMGQmyACG2ABG2AB66ACIAALYAELIADBkJsgAjtgARtgAeugAkAAC2ABCyAAwZCbIAGrYAEbYAHroAJQAAtgAQsgAMGQmyACa2ABG2AB66ACcAALYAEBkJsgAmtgARtgAeEii2ACmZAA6yAAwSKrYAEKcAC7IADBIrtgAQsgAMEiy2ABCEBQGn/v2n/tKnAAhMK7YALrEAAQAAAUQBRwAtAAIANgAAAG4AGwAAAC0AAwAxABMANgAaADsAHwA9ACUAPgA4AEAASwBFAGEARgB3AEcAgQBJAIsASwCbAEwAtQBNAMsATgDhAE8A9wBQAQ0AUQEgAFIBKwBUATMAWAE7AEABQQBbAUQAXgFHAFwBSABdAUwAYQA8AAAAWwAJ/QATBwA9BwAF/gAnBwA+BwA/Af8A7wAKBwAvBwA9BwAFBwA+BwA/AQcAFQcAQAcAQQcAHAAAB/8ABwAGBwAvBwA9BwAFBwA+BwA/AQAA+AAF+QACQgcALQQAQgAAAAQAAQAtAAMAQwAAAAIARAC9AAAACgABALsAvwC8ABkAVQAAACYABgBWAAEAVwBWAAEAagBWAAEAbQBWAAEAbwBWAAEAcABWAAEAcg==</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Java Code</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Java Code</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
