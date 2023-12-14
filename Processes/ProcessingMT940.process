@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003">
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType">
     <pd:name>Processes/ProcessingMT940.process</pd:name>
     <pd:startName>Start</pd:startName>
     <pd:startX>150</pd:startX>
@@ -37,12 +37,40 @@ import com.prowidesoftware.swift.utils.Lib;
 
 public class ProcessingMT940JavaCode{
 /****** START SET/GET METHOD, DO NOT MODIFY *****/
-	protected String out_put = "";
-	public String getout_put() {
-		return out_put;
+	protected String inputDir = "";
+	protected String outputDir = "";
+	protected String outputFileName = "";
+	protected String inputFileName = "";
+	protected String bankAccount = "";
+	public String getinputDir() {
+		return inputDir;
 	}
-	public void setout_put(String val) {
-		out_put = val;
+	public void setinputDir(String val) {
+		inputDir = val;
+	}
+	public String getoutputDir() {
+		return outputDir;
+	}
+	public void setoutputDir(String val) {
+		outputDir = val;
+	}
+	public String getoutputFileName() {
+		return outputFileName;
+	}
+	public void setoutputFileName(String val) {
+		outputFileName = val;
+	}
+	public String getinputFileName() {
+		return inputFileName;
+	}
+	public void setinputFileName(String val) {
+		inputFileName = val;
+	}
+	public String getbankAccount() {
+		return bankAccount;
+	}
+	public void setbankAccount(String val) {
+		bankAccount = val;
 	}
 /****** END SET/GET METHOD, DO NOT MODIFY *****/
 	public ProcessingMT940JavaCode() {
@@ -50,14 +78,18 @@ public class ProcessingMT940JavaCode{
 	}
 	public void invoke() throws Exception {
 /* Available Variables: DO NOT MODIFY
-	Out : String out_put
+	In  : String inputDir
+	In  : String outputDir
+	In  : String outputFileName
+	In  : String inputFileName
+	Out : String outputFileName
+	Out : String bankAccount
 * Available Variables: DO NOT MODIFY *****/
 
 		try {
 
-            //String filePath = "C:\\u01\\mt940-bancomer.txt"; // replace with your file path
-            String filePath = "C:\\u01\\input\\SALI.00004523.009.TG-0014.F230403.0640086.txt";
-            String outPath="C:\\u01\\output\\output1.csv";
+			String filePath = this.getinputDir()+ this.getinputFileName();
+            String outPath= this.getoutputDir() + this.getoutputFileName();
         
             RJEReader reader = new RJEReader(new File(filePath));
             int regs=0;	
@@ -88,6 +120,8 @@ public class ProcessingMT940JavaCode{
                        //System.out.println("b4: " + b4);
                        SwiftBlock5 b5 = mt940.getSwiftMessage().getBlock5();
                        //System.out.println("b5: " + b5);
+                       //Account Number to identify the Business Unit
+                       this.setoutputFileName(b4.getTagValue(Field25.NAME).trim());
                        
                        for (int j=0; j&lt;b4.getFieldsByName(Field61.NAME).length;j++) {
                        
@@ -98,7 +132,7 @@ public class ProcessingMT940JavaCode{
 	                       Field28C tx28 = (Field28C) b4.getFieldByName(Field28C.NAME);
 	                       Field86 tx86 = (Field86) b4.getFieldByName(Field86.NAME);
 	                        
-	                       line.append("20231129-185022|" + "SALI.00004523.009.TG-0014.F230403.0640086.txt|");
+	                       line.append("20231129-185022|" + this.getinputFileName() +"|");
 	                       
 	                       if(tx.getComponent(Field61.DEBITCREDIT_MARK).equals("C")){
 	                           line.append("PAGO ALUMNO" + "|");
@@ -110,26 +144,30 @@ public class ProcessingMT940JavaCode{
 	                       line.append(tx.getComponent(Field61.DATE)+"|");
 	                       line.append(tx.getComponent(Field61.ENTRY_DATE)+"|");
 	                       line.append(tx.getComponent(Field61.AMOUNT)+"|");
-	                       line.append(tx.getComponent(Field61.SUPPLEMENTARY_DETAILS).trim()+"|");
+	                       line.append(cleanText(tx.getComponent(Field61.SUPPLEMENTARY_DETAILS))+"|");
 	                       
-	                       line.append(tx20.getComponent(Field20.REFERENCE).trim()+"|");
-	                       line.append(tx21.getComponent(Field21.REFERENCE).trim()+"|");
-	                       line.append(tx25.getComponent(Field25.ACCOUNT).trim()+"|");
+	                       line.append(cleanText(tx20.getComponent(Field20.REFERENCE))+"|");
+	                       line.append(cleanText(tx21.getComponent(Field21.REFERENCE))+"|");
+	                       line.append(cleanText(tx25.getComponent(Field25.ACCOUNT))+"|");
 	                       
 	                       if(tx28 != null) {
-	                    	   line.append(tx28.getValue().trim().replace("\r\n", "")+"|");
+	                    	   line.append(cleanText(tx28.getValue())+"|");
 	                       }else {
 	                    	   line.append( "|");
 	                       }
 	                       
 	                       //all 61
-	                       line.append(tx.getValue().trim().replace("\r\n", "").replace("                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ", "") +"|");
+	                       line.append(cleanText(tx.getValue()).replace("                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ", "") +"|");
 	                       //all 86
-	                       line.append(tx86.getValue().trim().replace("\r\n", "") );
+	                       line.append(cleanText(tx86.getValue()));
 	                       line.append("\n");
 	                       
 	                       regs ++;
+	                        
                        }
+                       
+                       
+                       	outPath= this.getoutputDir() + this.getoutputFileName()+ "_output.csv";
                        
                         System.out.println(line);
                         FileWriter fw = new FileWriter(outPath, true);
@@ -146,32 +184,70 @@ public class ProcessingMT940JavaCode{
 				
 	}
 	
-	
-//	public static void main(String[] args) throws Exception {
-//		// TODO Auto-generated method stub
-//		ProcessingMT940JavaCode pMt940 = new ProcessingMT940JavaCode();
-//		pMt940.invoke();
-//
-//	}
-
+	public String cleanText(String text) {
+		String textResult = text.trim();
+		
+		textResult = textResult.replace("\r", "").replace("\n","");
+		
+		return textResult;
+	}
 }
 </fullsource>
+            <javaArchive>/Shared Resources/AliasLibrary.aliaslib</javaArchive>
+            <inputData>
+                <row>
+                    <fieldName>inputDir</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>outputDir</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>outputFileName</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>inputFileName</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </inputData>
             <outputData>
                 <row>
-                    <fieldName>out_put</fieldName>
+                    <fieldName>outputFileName</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>bankAccount</fieldName>
                     <fieldType>string</fieldType>
                     <fieldRequired>optional</fieldRequired>
                 </row>
             </outputData>
-            <javaArchive>/Shared Resources/AliasLibrary.aliaslib</javaArchive>
             <byteCode>
                 <class>
                     <name>ProcessingMT940JavaCode</name>
-                    <byteCode>yv66vgAAADcBGQkAUwBsCgBUAG0IAG4IAG8IAHAHAHEHAHIKAAcAcwoABgB0CgAGAHUKAAYAdgoAYgB3BwB4CgANAG0KAGMAeQoAegB7CgB8AH0KAHwAfgoAegB/CgBjAIAHAIEKABUAggoAFQB3CgBjAIMKAGMAhAoAYwCFCgBjAIYKAGMAhwcAiAgAiQoAZwCKBwCLCACMCgBnAI0HAI4IAI8HAJAIAJEHAJIIAJMHAJQIAJUIAJYKAA0AlwkAHQCYCgAdAJkIAJoKAGEAmwgAnAgAnQkAHQCeEgAAAKIJAB0AowkAHQCkCQAdAKUJAB0ApgoAYQCnCQAgAKgKACAAmQkAIwCoCgAjAJkJACUAqQoAJQCZCgAnAKoIAKsKAGEArAgArQoAHQCqCACuCgApAKoIAK8JALAAsQoAsgCzBwC0CgBKALUKAA0AtgoASgC3CgBKALgSAAEAugoAsgC7BwC8CgBRAL0HAL4HAL8BAAdvdXRfcHV0AQASTGphdmEvbGFuZy9TdHJpbmc7AQAKZ2V0b3V0X3B1dAEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEACnNldG91dF9wdXQBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAY8aW5pdD4BAAMoKVYBAAZpbnZva2UBAA1TdGFja01hcFRhYmxlBwDABwDBBwDCBwDDBwDEBwDFBwDGBwDHAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBABxQcm9jZXNzaW5nTVQ5NDBKYXZhQ29kZS5qYXZhDABVAFYMAF0AXgEAAAEAOkM6XHUwMVxpbnB1dFxTQUxJLjAwMDA0NTIzLjAwOS5URy0wMDE0LkYyMzA0MDMuMDY0MDA4Ni50eHQBABlDOlx1MDFcb3V0cHV0XG91dHB1dDEuY3N2AQAmY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9pby9SSkVSZWFkZXIBAAxqYXZhL2lvL0ZpbGUMAF0AXAwAXQDIDADJAMoMAMsAzAwAzQDOAQAWamF2YS9sYW5nL1N0cmluZ0J1ZmZlcgwAzwDQBwDRDADSANMHANQMANUA1gwA1wDYDADZANoMANsA3AEALmNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvbXQvbXQ5eHgvTVQ5NDAMAF0A3QwA3gDfDADgAOEMAOIA4wwA5ADlDADmAOcBAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkNjEBAAI2MQwA6ADpAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDIwAQACMjAMAOoA6wEALWNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQyMQEAAjIxAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDI1AQACMjUBAC5jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkMjhDAQADMjhDAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDg2AQACODYBAD4yMDIzMTEyOS0xODUwMjJ8U0FMSS4wMDAwNDUyMy4wMDkuVEctMDAxNC5GMjMwNDAzLjA2NDAwODYudHh0fAwA7ADtDADuAO8MAPAA8QEAAUMMAPIA8wEADFBBR08gQUxVTU5PfAEABk9UUk9TfAwA9ADvAQAQQm9vdHN0cmFwTWV0aG9kcw8GAPUIAPYMAPcA+AwA+QDvDAD6AO8MAPsA7wwA/ADvDAD9AFgMAP4A7wwA/wDvDAEAAFgBAAINCgwBAQECAQABfAEBwyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICABAAEKBwEDDAEEAQUHAQYMAQcBCAEAEmphdmEvaW8vRmlsZVdyaXRlcgwAXQEJDAEKAFgMAQsAXAwBDABeCAENDAD3APEMAQcAXAEAE2phdmEvbGFuZy9FeGNlcHRpb24MAQ4AXgEAMVByb2Nlc3Nlcy9Qcm9jZXNzaW5nTVQ5NDAvUHJvY2Vzc2luZ01UOTQwSmF2YUNvZGUBABBqYXZhL2xhbmcvT2JqZWN0AQAQamF2YS9sYW5nL1N0cmluZwEALWNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvbXQvQWJzdHJhY3RNVAEALGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRNZXNzYWdlAQArY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrMQEAK2NvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazIBACtjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2szAQArY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrNAEAK2NvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazUBABEoTGphdmEvaW8vRmlsZTspVgEAB2hhc05leHQBAAMoKVoBAAZuZXh0TVQBADEoKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL210L0Fic3RyYWN0TVQ7AQAPZ2V0U3dpZnRNZXNzYWdlAQAwKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdE1lc3NhZ2U7AQAQZ2V0VW5wYXJzZWRUZXh0cwEANCgpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvVW5wYXJzZWRUZXh0TGlzdDsBADBjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1VucGFyc2VkVGV4dExpc3QBAARzaXplAQAVKClMamF2YS9sYW5nL0ludGVnZXI7AQARamF2YS9sYW5nL0ludGVnZXIBAAhpbnRWYWx1ZQEAAygpSQEAB3ZhbHVlT2YBABYoSSlMamF2YS9sYW5nL0ludGVnZXI7AQAQZ2V0VGV4dEFzTWVzc2FnZQEAQyhMamF2YS9sYW5nL0ludGVnZXI7KUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTsBAAZpc1R5cGUBAAQoSSlaAQAxKExjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTspVgEACWdldEJsb2NrMQEALygpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazE7AQAJZ2V0QmxvY2syAQAvKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrMjsBAAlnZXRCbG9jazMBAC8oKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2szOwEACWdldEJsb2NrNAEALygpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazQ7AQAJZ2V0QmxvY2s1AQAvKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrNTsBAA9nZXRGaWVsZHNCeU5hbWUBAEIoTGphdmEvbGFuZy9TdHJpbmc7KVtMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDsBAA5nZXRGaWVsZEJ5TmFtZQEAQShMamF2YS9sYW5nL1N0cmluZzspTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQ7AQAGYXBwZW5kAQAsKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjsBABBERUJJVENSRURJVF9NQVJLAQATTGphdmEvbGFuZy9JbnRlZ2VyOwEADGdldENvbXBvbmVudAEAFShJKUxqYXZhL2xhbmcvU3RyaW5nOwEABmVxdWFscwEAFShMamF2YS9sYW5nL09iamVjdDspWgEAH1JFRkVSRU5DRV9GT1JfVEhFX0FDQ09VTlRfT1dORVIKAQ8BEAEAAgF8AQAXbWFrZUNvbmNhdFdpdGhDb25zdGFudHMBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEABERBVEUBAApFTlRSWV9EQVRFAQAGQU1PVU5UAQAVU1VQUExFTUVOVEFSWV9ERVRBSUxTAQAEdHJpbQEACVJFRkVSRU5DRQEAB0FDQ09VTlQBAAhnZXRWYWx1ZQEAB3JlcGxhY2UBAEQoTGphdmEvbGFuZy9DaGFyU2VxdWVuY2U7TGphdmEvbGFuZy9DaGFyU2VxdWVuY2U7KUxqYXZhL2xhbmcvU3RyaW5nOwEAEGphdmEvbGFuZy9TeXN0ZW0BAANvdXQBABVMamF2YS9pby9QcmludFN0cmVhbTsBABNqYXZhL2lvL1ByaW50U3RyZWFtAQAHcHJpbnRsbgEAFShMamF2YS9sYW5nL09iamVjdDspVgEAFihMamF2YS9sYW5nL1N0cmluZztaKVYBAAh0b1N0cmluZwEABXdyaXRlAQAFY2xvc2UBAA1Ub3RhbCBSZWdzOiABAQAPcHJpbnRTdGFja1RyYWNlBwERDAD3ARUBACRqYXZhL2xhbmcvaW52b2tlL1N0cmluZ0NvbmNhdEZhY3RvcnkHARcBAAZMb29rdXABAAxJbm5lckNsYXNzZXMBAJgoTGphdmEvbGFuZy9pbnZva2UvTWV0aG9kSGFuZGxlcyRMb29rdXA7TGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9pbnZva2UvTWV0aG9kVHlwZTtMamF2YS9sYW5nL1N0cmluZztbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvaW52b2tlL0NhbGxTaXRlOwcBGAEAJWphdmEvbGFuZy9pbnZva2UvTWV0aG9kSGFuZGxlcyRMb29rdXABAB5qYXZhL2xhbmcvaW52b2tlL01ldGhvZEhhbmRsZXMAIQBTAFQAAAABAAQAVQBWAAAABAABAFcAWAABAFkAAAAdAAEAAQAAAAUqtAABsAAAAAEAWgAAAAYAAQAAABUAAQBbAFwAAQBZAAAAIgACAAIAAAAGKiu1AAGxAAAAAQBaAAAACgACAAAAGAAFABkAAQBdAF4AAQBZAAAAKwACAAEAAAALKrcAAioSA7UAAbEAAAABAFoAAAAOAAMAAAAbAAQAEwAKAB0AAQBfAF4AAgBZAAAEpQAFABYAAAKeEgRMEgVNuwAGWbsAB1krtwAItwAJTgM2BC22AAqZAngttgALOgUZBbYADDoGuwANWbcADjoHAzYIFQgZBrYAD7YAELYAEaICPxkGtgAPFQi4ABK2ABMRA6y2ABSZAiO7ABVZGQa2AA8VCLgAErYAE7cAFjoJGQm2ABe2ABg6ChkJtgAXtgAZOgsZCbYAF7YAGjoMGQm2ABe2ABs6DRkJtgAXtgAcOg4DNg8VDxkNEh62AB++ogGpGQ0SHrYAHxUPMsAAHToQGQ0SIbYAIsAAIDoRGQ0SJLYAIsAAIzoSGQ0SJrYAIsAAJToTGQ0SKLYAIsAAJzoUGQ0SKrYAIsAAKToVGQcSK7YALFcZELIALbYAEbYALhIvtgAwmQAOGQcSMbYALFenAAsZBxIytgAsVxkHGRCyADO2ABG2AC66ADQAALYALFcZBxkQsgA1tgARtgAuugA0AAC2ACxXGQcZELIANrYAEbYALroANAAAtgAsVxkHGRCyADe2ABG2AC66ADQAALYALFcZBxkQsgA4tgARtgAutgA5ugA0AAC2ACxXGQcZEbIAOrYAEbYAO7YAOboANAAAtgAsVxkHGRKyADy2ABG2AD22ADm6ADQAALYALFcZBxkTsgA+tgARtgA/tgA5ugA0AAC2ACxXGRTGACAZBxkUtgBAtgA5EkESA7YAQroANAAAtgAsV6cACxkHEkO2ACxXGQcZELYARLYAORJBEgO2AEISRRIDtgBCugA0AAC2ACxXGQcZFbYARrYAORJBEgO2AEK2ACxXGQcSR7YALFeEBAGEDwGn/lCyAEgZB7YASbsASlksBLcASzoPGQ8ZB7YATLYATRkPtgBOhAgBp/23sgBIFQS6AE8AALYAUKf9h6cACEwrtgBSsQABAAAClQKYAFEAAgBaAAAA2gA2AAAAJgADACcABgApABYAKgAZAC4AIAAyACYAMwAtADUANgA2AEkAOABfADkAdQA6AH8APACJAD4AkwBCAJ0ARACnAEcAtwBJAMYASgDSAEsA3gBMAOoATQD2AE4BAgBQAQoAUgEdAFMBKABVATAAWAFGAFkBXABaAXIAWwGIAFwBoQBeAboAXwHTAGAB7ABiAfEAYwIOAGUCFgBpAjcAawJMAGwCVABuAlcARwJdAHECZQByAnAAcwJ6AHQCfwA2AoUAeAKSAHkClQB8ApgAegKZAHsCnQB+AGAAAAENAA3/ABkABQcAUwcAYQcAYQcABgEAAP8AHwAJBwBTBwBhBwBhBwAGAQcAYgcAYwcADQEAAP8AcAAQBwBTBwBhBwBhBwAGAQcAYgcAYwcADQEHABUHAGQHAGUHAGYHAGcHAGgBAAD/AH0AFgcAUwcAYQcAYQcABgEHAGIHAGMHAA0BBwAVBwBkBwBlBwBmBwBnBwBoAQcAHQcAIAcAIwcAJQcAJwcAKQAAB/sA3Qf/AEYADwcAUwcAYQcAYQcABgEHAGIHAGMHAA0BBwAVBwBkBwBlBwBmBwBnBwBoAAD/ACEACQcAUwcAYQcAYQcABgEHAGIHAGMHAA0BAAD6AAX/AA8AAQcAUwAAQgcAUQQAaQAAAAQAAQBRAAMAagAAAAIAawEUAAAACgABARIBFgETABkAnwAAAA4AAgCgAAEAoQCgAAEAuQ==</byteCode>
+                    <byteCode>yv66vgAAADcBQgkAXgCFCQBeAIYJAF4AhwkAXgCICQBeAIkKAF8AiggAiwoAXgCMCgBeAI0SAAAAkQoAXgCSCgBeAJMHAJQHAJUKAA4AlgoADQCXCgANAJgKAA0AmQoAeQCaBwCbCgAUAIoKAHoAnAoAnQCeCgCfAKAKAJ8AoQoAnQCiCgB6AKMHAKQKABwApQoAHACaCgB6AKYKAHoApwoAegCoCgB6AKkKAHoAqgcAqwgArAoAfgCtCgB4AK4KAF4ArwcAsAgAsQoAfgCyBwCzCAC0CgB+ALUHALYIALcHALgIALkHALoIALsSAAEAvQoAFAC+CQApAL8KACkAwAgAwQoAeADCCADDCADECQApAMUSAAIAvQkAKQDHCQApAMgJACkAyQkAKQDKCgBeAMsJACwAzAoALADACQAvAMwKAC8AwAkAJADNCgAkAMAKADEAzggAzwoAKQDOCADQCgB4ANEKADMAzggA0hIAAwCRCQDUANUKANYA1wcA2AoAVADZCgAUANoKAFQA2woAVADcEgAEAN4KANYA3wcA4AoAWwDhCADiBwDjBwDkAQAIaW5wdXREaXIBABJMamF2YS9sYW5nL1N0cmluZzsBAAlvdXRwdXREaXIBAA5vdXRwdXRGaWxlTmFtZQEADWlucHV0RmlsZU5hbWUBAAtiYW5rQWNjb3VudAEAC2dldGlucHV0RGlyAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQALc2V0aW5wdXREaXIBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAxnZXRvdXRwdXREaXIBAAxzZXRvdXRwdXREaXIBABFnZXRvdXRwdXRGaWxlTmFtZQEAEXNldG91dHB1dEZpbGVOYW1lAQAQZ2V0aW5wdXRGaWxlTmFtZQEAEHNldGlucHV0RmlsZU5hbWUBAA5nZXRiYW5rQWNjb3VudAEADnNldGJhbmtBY2NvdW50AQAGPGluaXQ+AQADKClWAQAGaW52b2tlAQANU3RhY2tNYXBUYWJsZQcA5QcA5gcA5wcA6AcA6QcA6gcA6wcA7AEACkV4Y2VwdGlvbnMBAAljbGVhblRleHQBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAClNvdXJjZUZpbGUBABxQcm9jZXNzaW5nTVQ5NDBKYXZhQ29kZS5qYXZhDABgAGEMAGIAYQwAYwBhDABkAGEMAGUAYQwAdAB1AQAADABmAGcMAHAAZwEAEEJvb3RzdHJhcE1ldGhvZHMPBgDtCADuDADvAPAMAGwAZwwAbgBnAQAmY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9pby9SSkVSZWFkZXIBAAxqYXZhL2lvL0ZpbGUMAHQAawwAdADxDADyAPMMAPQA9QwA9gD3AQAWamF2YS9sYW5nL1N0cmluZ0J1ZmZlcgwA+AD5BwD6DAD7APwHAP0MAP4A/wwBAAEBDAECAQMMAQQBBQEALmNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvbXQvbXQ5eHgvTVQ5NDAMAHQBBgwBBwEIDAEJAQoMAQsBDAwBDQEODAEPARABAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkMjUBAAIyNQwBEQCCDAESAGcMAG8AawEALWNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQ2MQEAAjYxDAETARQBAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkMjABAAIyMAwBFQEWAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDIxAQACMjEBAC5jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkMjhDAQADMjhDAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDg2AQACODYIARcMAO8AggwBGAEZDAEaARsMARwBHQEAAUMMAR4BHwEADFBBR08gQUxVTU5PfAEABk9UUk9TfAwBIAEbCAEhDAEiARsMASMBGwwBJAEbDAElARsMAIEAggwBJgEbDAEnARsMASgAZwEAAXwBAcMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDAEpASoBAAEKCAErBwEsDAEtAS4HAS8MATABMQEAEmphdmEvaW8vRmlsZVdyaXRlcgwAdAEyDAEzAGcMATQAawwBNQB1CAE2DADvAR0MATAAawEAE2phdmEvbGFuZy9FeGNlcHRpb24MATcAdQEAAQ0BADFQcm9jZXNzZXMvUHJvY2Vzc2luZ01UOTQwL1Byb2Nlc3NpbmdNVDk0MEphdmFDb2RlAQAQamF2YS9sYW5nL09iamVjdAEAEGphdmEvbGFuZy9TdHJpbmcBAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL210L0Fic3RyYWN0TVQBACxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZQEAK2NvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazEBACtjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2syAQArY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrMwEAK2NvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazQBACtjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2s1CgE4ATkBAAIBAQEAF21ha2VDb25jYXRXaXRoQ29uc3RhbnRzAQA4KExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZzsBABEoTGphdmEvaW8vRmlsZTspVgEAB2hhc05leHQBAAMoKVoBAAZuZXh0TVQBADEoKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL210L0Fic3RyYWN0TVQ7AQAPZ2V0U3dpZnRNZXNzYWdlAQAwKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdE1lc3NhZ2U7AQAQZ2V0VW5wYXJzZWRUZXh0cwEANCgpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvVW5wYXJzZWRUZXh0TGlzdDsBADBjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1VucGFyc2VkVGV4dExpc3QBAARzaXplAQAVKClMamF2YS9sYW5nL0ludGVnZXI7AQARamF2YS9sYW5nL0ludGVnZXIBAAhpbnRWYWx1ZQEAAygpSQEAB3ZhbHVlT2YBABYoSSlMamF2YS9sYW5nL0ludGVnZXI7AQAQZ2V0VGV4dEFzTWVzc2FnZQEAQyhMamF2YS9sYW5nL0ludGVnZXI7KUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTsBAAZpc1R5cGUBAAQoSSlaAQAxKExjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTspVgEACWdldEJsb2NrMQEALygpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazE7AQAJZ2V0QmxvY2syAQAvKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrMjsBAAlnZXRCbG9jazMBAC8oKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2szOwEACWdldEJsb2NrNAEALygpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazQ7AQAJZ2V0QmxvY2s1AQAvKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrNTsBAAtnZXRUYWdWYWx1ZQEABHRyaW0BAA9nZXRGaWVsZHNCeU5hbWUBAEIoTGphdmEvbGFuZy9TdHJpbmc7KVtMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDsBAA5nZXRGaWVsZEJ5TmFtZQEAQShMamF2YS9sYW5nL1N0cmluZzspTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQ7AQASMjAyMzExMjktMTg1MDIyfAF8AQAGYXBwZW5kAQAsKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjsBABBERUJJVENSRURJVF9NQVJLAQATTGphdmEvbGFuZy9JbnRlZ2VyOwEADGdldENvbXBvbmVudAEAFShJKUxqYXZhL2xhbmcvU3RyaW5nOwEABmVxdWFscwEAFShMamF2YS9sYW5nL09iamVjdDspWgEAH1JFRkVSRU5DRV9GT1JfVEhFX0FDQ09VTlRfT1dORVIBAAIBfAEABERBVEUBAApFTlRSWV9EQVRFAQAGQU1PVU5UAQAVU1VQUExFTUVOVEFSWV9ERVRBSUxTAQAJUkVGRVJFTkNFAQAHQUNDT1VOVAEACGdldFZhbHVlAQAHcmVwbGFjZQEARChMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTtMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspTGphdmEvbGFuZy9TdHJpbmc7AQANAQFfb3V0cHV0LmNzdgEAEGphdmEvbGFuZy9TeXN0ZW0BAANvdXQBABVMamF2YS9pby9QcmludFN0cmVhbTsBABNqYXZhL2lvL1ByaW50U3RyZWFtAQAHcHJpbnRsbgEAFShMamF2YS9sYW5nL09iamVjdDspVgEAFihMamF2YS9sYW5nL1N0cmluZztaKVYBAAh0b1N0cmluZwEABXdyaXRlAQAFY2xvc2UBAA1Ub3RhbCBSZWdzOiABAQAPcHJpbnRTdGFja1RyYWNlBwE6DADvAT4BACRqYXZhL2xhbmcvaW52b2tlL1N0cmluZ0NvbmNhdEZhY3RvcnkHAUABAAZMb29rdXABAAxJbm5lckNsYXNz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</byteCode>
                 </class>
             </byteCode>
         </config>
-        <pd:inputBindings/>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <inputDir>
+                    <xsl:value-of select="$_globalVariables/ns:GlobalVariables/ProjConfig/inputDir"/>
+                </inputDir>
+                <outputDir>
+                    <xsl:value-of select="$_globalVariables/ns:GlobalVariables/ProjConfig/outputDir"/>
+                </outputDir>
+                <outputFileName>
+                    <xsl:value-of select="'output3.csv'"/>
+                </outputFileName>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
     </pd:activity>
     <pd:transition>
         <pd:from>Start</pd:from>
