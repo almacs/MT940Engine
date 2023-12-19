@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <name>Output Data Formar</name>
+    <resourceType>ae.shared.ParseSharedResource</resourceType>
+    <config xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <FormatType>Delimiter separated</FormatType>
+        <ColumnSeparator>|</ColumnSeparator>
+        <ColSeparatorRule>Treat all characters as entered as a single column separator string</ColSeparatorRule>
+        <LineSeparator>
+</LineSeparator>
+        <FillCharacter>Space</FillCharacter>
+        <LineLength>1</LineLength>
+        <DataFormat>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="id_ejecucion" type="xsd:string"/>
+                        <xsd:element name="nombre_archivo" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="tipo_transaccion" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c86_referencia_alumno" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c61_fecha_pago" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c61_fecha_posteo" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c61_monto" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c61_num_aprobacion" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c20_referencia_trans" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c21_nombre_propietario" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c25_cuenta_bancaria" type="xsd:string"/>
+                        <xsd:element name="c28_num_edo_cuenta" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c61_cod_leyenda" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c86_tipo_deposito" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c61_tipo_mov" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c61_moneda" type="xsd:string"/>
+                        <xsd:element name="c61_completo" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="c86_completo" type="xsd:string" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </DataFormat>
+    </config>
+</BWSharedResource>
