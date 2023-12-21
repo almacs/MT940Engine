@@ -80,14 +80,14 @@
         <pd:activity name="JDBC Update">
             <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
             <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
-            <pd:x>683</pd:x>
+            <pd:x>684</pd:x>
             <pd:y>101</pd:y>
             <config>
                 <timeout>10</timeout>
                 <commit>false</commit>
                 <emptyStrAsNil>false</emptyStrAsNil>
                 <jdbcSharedConfig>/Shared Resources/JDBC Connection.sharedjdbc</jdbcSharedConfig>
-                <statement>insert into  MT940_BBVA_2 (ID_EJECUCION,
+                <statement>insert into  MT940_BBVA_2_ACS (ID_EJECUCION,
 NOMBRE_ARCHIVO,
 TIPO_TRANSACCION,
 C86_REFERENCIA_ALUMNO,
@@ -107,7 +107,7 @@ C60F_SALDO_INICIAL,
 C62F_SALDO_CIERRE,
 C61_COMPLETO,
 C86_COMPLETO)
-values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);</statement>
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
                 <batchUpdate>true</batchUpdate>
                 <Prepared_Param_DataType>
                     <parameter>
@@ -221,8 +221,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);</statement>
                             </p_TIPO_TRANSACCION>
                             <p_C86_REFERENCIA_ALUMNO>
                                 <xsl:choose>
-                                    <xsl:when test="exists(c86_referencia_alumno)">
-                                        <xsl:value-of select="c86_referencia_alumno"/>
+                                    <xsl:when test="exists(substring(c86_referencia_alumno, 0,20))">
+                                        <xsl:value-of select="substring(c86_referencia_alumno, 0,20)"/>
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <xsl:attribute name="xsi:nil">true</xsl:attribute>
@@ -337,8 +337,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);</statement>
                             </p_C61_MONEDA>
                             <p_C60F_SALDO_INICIAL>
                                 <xsl:choose>
-                                    <xsl:when test="exists(0)">
-                                        <xsl:value-of select="0"/>
+                                    <xsl:when test="exists(concat(substring-before(c60F_saldo_inicial, ','),'.', substring-after(c60F_saldo_inicial, ',') ))">
+                                        <xsl:value-of select="concat(substring-before(c60F_saldo_inicial, ','),'.', substring-after(c60F_saldo_inicial, ',') )"/>
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <xsl:attribute name="xsi:nil">true</xsl:attribute>
@@ -346,7 +346,7 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);</statement>
                                 </xsl:choose>
                             </p_C60F_SALDO_INICIAL>
                             <p_C62F_SALDO_CIERRE>
-                                <xsl:value-of select="0"/>
+                                <xsl:value-of select="concat(substring-before(c62F_saldo_cierre, ','),'.', substring-after(c62F_saldo_cierre, ',') )"/>
                             </p_C62F_SALDO_CIERRE>
                             <p_C61_COMPLETO>
                                 <xsl:choose>

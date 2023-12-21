@@ -11,19 +11,19 @@
 		</globalVariable>
 		<globalVariable>
 			<name>password</name>
-			<value>#!NqaRkuubG6WmekMzRapbbtw1WDeedAmy</value>
+			<value>#!ys0qlj8XwrCOgdISApG25j1W/5cLPl/6dvrMb25iQLg=</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>Password</type>
-			<modTime>1702995880555</modTime>
+			<modTime>1703039786677</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>user</name>
-			<value>sa</value>
+			<value>SATURN</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1702995880574</modTime>
+			<modTime>1703039786696</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>
