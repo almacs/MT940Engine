@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns13="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns12="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <pd:name>Processes/SaveInfoInDBBatch.process</pd:name>
+    <pd:name>Processes/SaveInfoInDBBatch (1).process</pd:name>
     <pd:startName>Start</pd:startName>
     <pd:startX>28</pd:startX>
     <pd:startY>89</pd:startY>
@@ -199,14 +199,14 @@
         <pd:activity name="JDBC Update">
             <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
             <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
-            <pd:x>797</pd:x>
+            <pd:x>796</pd:x>
             <pd:y>108</pd:y>
             <config>
                 <timeout>350</timeout>
                 <commit>false</commit>
                 <emptyStrAsNil>false</emptyStrAsNil>
                 <jdbcSharedConfig>/Shared Resources/JDBC Connection.sharedjdbc</jdbcSharedConfig>
-                <statement>insert into  MT940_BBVA_2_ACS (ID_EJECUCION,
+                <statement>insert into  MT940_BBVA_2_ACS_2 (ID_EJECUCION,
 NOMBRE_ARCHIVO,
 TIPO_TRANSACCION,
 C86_REFERENCIA_ALUMNO,

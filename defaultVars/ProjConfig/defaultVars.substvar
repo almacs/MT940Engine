@@ -17,5 +17,13 @@
 			<type>String</type>
 			<modTime>1702521325728</modTime>
 		</globalVariable>
+		<globalVariable>
+			<name>withExpenses</name>
+			<value>true</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Boolean</type>
+			<modTime>1705379942472</modTime>
+		</globalVariable>
 	</globalVariables>
 </repository>
