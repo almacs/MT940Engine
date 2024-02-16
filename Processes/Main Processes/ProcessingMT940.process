@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/pe/EngineTypes">
-    <pd:name>Processes/ProcessingMT940.process</pd:name>
+    <pd:name>Processes/Main Processes/ProcessingMT940.process</pd:name>
     <pd:startName>Start</pd:startName>
     <pd:startX>60</pd:startX>
     <pd:startY>103</pd:startY>
     <pd:returnBindings/>
     <pd:endName>End</pd:endName>
-    <pd:endX>1094</pd:endX>
-    <pd:endY>122</pd:endY>
+    <pd:endX>1328</pd:endX>
+    <pd:endY>136</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1701986931008</pd:targetNamespace>
@@ -30,10 +30,10 @@
     <pd:group name="Group">
         <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
         <pd:resourceType>ae.process.group</pd:resourceType>
-        <pd:x>493</pd:x>
-        <pd:y>13</pd:y>
-        <pd:width>374</pd:width>
-        <pd:height>214</pd:height>
+        <pd:x>464</pd:x>
+        <pd:y>31</pd:y>
+        <pd:width>596</pd:width>
+        <pd:height>359</pd:height>
         <pd:collapsedWidth>57</pd:collapsedWidth>
         <pd:collapsedHeight>70</pd:collapsedHeight>
         <pd:groupVariables/>
@@ -57,14 +57,14 @@
             <pd:conditionType>always</pd:conditionType>
         </pd:transition>
         <pd:transition>
-            <pd:from>Log File Error</pd:from>
+            <pd:from>Remove-File-1</pd:from>
             <pd:to>end</pd:to>
             <pd:lineType>Default</pd:lineType>
             <pd:lineColor>-16777216</pd:lineColor>
             <pd:conditionType>always</pd:conditionType>
         </pd:transition>
         <pd:transition>
-            <pd:from>Java Code</pd:from>
+            <pd:from>Remove File</pd:from>
             <pd:to>end</pd:to>
             <pd:lineType>Default</pd:lineType>
             <pd:lineColor>-16777216</pd:lineColor>
@@ -84,15 +84,52 @@
             <pd:lineColor>-16777216</pd:lineColor>
             <pd:conditionType>always</pd:conditionType>
         </pd:transition>
+        <pd:transition>
+            <pd:from>Java Code</pd:from>
+            <pd:to>Copy File</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Log File Error</pd:from>
+            <pd:to>Copy Error File</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Java Code</pd:from>
+            <pd:to>Generate-Error-1</pd:to>
+            <pd:xpathDescription>Error</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-3407872</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>string-length($Java-Code/javaCodeActivityOutput/errorMsg)&gt;0</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Copy File</pd:from>
+            <pd:to>Remove File</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Copy Error File</pd:from>
+            <pd:to>Remove-File-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
         <pd:activity name="Java Code">
             <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
             <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
-            <pd:x>697</pd:x>
-            <pd:y>85</pd:y>
+            <pd:x>665</pd:x>
+            <pd:y>117</pd:y>
             <config>
                 <fileName>ProcessingMT940JavaCode</fileName>
-                <packageName>Processes.ProcessingMT940</packageName>
-                <fullsource>package Processes.ProcessingMT940;
+                <packageName>Processes.MainProcesses.ProcessingMT940</packageName>
+                <fullsource>package Processes.MainProcesses.ProcessingMT940;
 
 import java.util.*;
 import java.io.*;
@@ -114,11 +151,7 @@ import com.prowidesoftware.swift.utils.Lib;
 
 public class ProcessingMT940JavaCode{
 	
-	String textDate = "";
-    String initialAmount = "";
-    String finalAmount = "";
-    String tranDate = "";
-    
+
 /****** START SET/GET METHOD, DO NOT MODIFY *****/
 	protected String inputDir = "";
 	protected String outputDir = "";
@@ -126,6 +159,7 @@ public class ProcessingMT940JavaCode{
 	protected String inputFileName = "";
 	protected boolean withExpenses = false;
 	protected String bankAccount = "";
+	protected String errorMsg = "";
 	public String getinputDir() {
 		return inputDir;
 	}
@@ -162,10 +196,23 @@ public class ProcessingMT940JavaCode{
 	public void setbankAccount(String val) {
 		bankAccount = val;
 	}
+	public String geterrorMsg() {
+		return errorMsg;
+	}
+	public void seterrorMsg(String val) {
+		errorMsg = val;
+	}
 /****** END SET/GET METHOD, DO NOT MODIFY *****/
 	public ProcessingMT940JavaCode() {
 		
 	}
+
+	String textDate = "";
+   	String initialAmount = "";
+    	String finalAmount = "";
+    	String tranDate = "";
+    
+
 	public void invoke() throws Exception {
 /* Available Variables: DO NOT MODIFY
 	In  : String inputDir
@@ -175,6 +222,7 @@ public class ProcessingMT940JavaCode{
 	In  : boolean withExpenses
 	Out : String outputFileName
 	Out : String bankAccount
+	Out : String errorMsg
 * Available Variables: DO NOT MODIFY *****/
 
 		try {
@@ -253,6 +301,7 @@ public class ProcessingMT940JavaCode{
                 
 			}
 				} catch (Exception e) {
+				   this.seterrorMsg("Error: "+ e.toString());
 			            e.printStackTrace();
 			        }
 				
@@ -463,18 +512,6 @@ public class ProcessingMT940JavaCode{
 }
 </fullsource>
                 <javaArchive>/Shared Resources/AliasLibrary.aliaslib</javaArchive>
-                <outputData>
-                    <row>
-                        <fieldName>outputFileName</fieldName>
-                        <fieldType>string</fieldType>
-                        <fieldRequired>optional</fieldRequired>
-                    </row>
-                    <row>
-                        <fieldName>bankAccount</fieldName>
-                        <fieldType>string</fieldType>
-                        <fieldRequired>optional</fieldRequired>
-                    </row>
-                </outputData>
                 <inputData>
                     <row>
                         <fieldName>inputDir</fieldName>
@@ -502,10 +539,27 @@ public class ProcessingMT940JavaCode{
                         <fieldRequired>optional</fieldRequired>
                     </row>
                 </inputData>
+                <outputData>
+                    <row>
+                        <fieldName>outputFileName</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>bankAccount</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>errorMsg</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                </outputData>
                 <byteCode>
                     <class>
                         <name>ProcessingMT940JavaCode</name>
-                        <byteCode>yv66vgAAADcB5wkAlwDXCQCXANgJAJcA2QkAlwDaCQCXANsJAJcA3AoAmADdCADeCQCXAN8JAJcA4AkAlwDhCQCXAOIKAJcA4woAlwDkEgAAAOgKAJcA6QoAlwDqCgCXAOsIAOwHAO0HAO4KABUA7woAFADwCgAUAPEKABQA8goAuwDzBwD0CgAbAN0HAPUKAB0A9goAHQDzCgC8APcKALwA+AoA+QD6CgD7APwKAPsA/QoA+QD+CAD/CgC9AQAIAQEKAL0BAgcBAwoAKgEECgCXAQUHAQYKAC0BBAgBBwgBCAcBCQoAMQEEBwEKCgAzAQQKAJcBCwoAvAEMCAENCgCAAQ4KAJcBDxIAAQERCgCXARIHARMKADwBFAoAGwEVCgA8ARYKADwBFwkBGAEZEgACARsKARwBHQcBHgoARAEfCgC8ASAKALwBIQoAvAEiBwEjCAEkCgCXASUHASYIAScJAEwBKAoBKQEqCgC9ASsKAJcBLAgBLQoAgAEuCgCXAS8KABsBMAcBMQgBMgcBMwgBNAcBNQgBNgcBNwgBOAoAXAE5CgCXAToSAAMA6AkATAE8CgBMASoIAT0KAIABPgoAlwE/CAFACAFBCAFCEgAEAUQJAEwBRQkATAFGCgCXAUcJAEwBSAkAVgFJCgBWASoJAFgBSQoAWAEqCQBJAUoKAEkBKgoAWgFLCAFMCgBMAU0KAEwBTgoATAFLCgCXAU8KAFwBSwgBUAoATAFRCwFSAVMLAMkA8QsAyQFUBwFVCgCAAVYSAAUA6AgBWAgBWQgBWggBWwgBXAgBXQoBXgFfCAFgCgFhAWIKAV4BYwoAgAFkCgCAAWUSAAYBZwcBaAoAkADvCAFpCAFqCAFrCgCXAWwKAIABbQcBbgcBbwEACHRleHREYXRlAQASTGphdmEvbGFuZy9TdHJpbmc7AQANaW5pdGlhbEFtb3VudAEAC2ZpbmFsQW1vdW50AQAIdHJhbkRhdGUBAAhpbnB1dERpcgEACW91dHB1dERpcgEADm91dHB1dEZpbGVOYW1lAQANaW5wdXRGaWxlTmFtZQEADHdpdGhFeHBlbnNlcwEAAVoBAAtiYW5rQWNjb3VudAEAC2dldGlucHV0RGlyAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQALc2V0aW5wdXREaXIBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAxnZXRvdXRwdXREaXIBAAxzZXRvdXRwdXREaXIBABFnZXRvdXRwdXRGaWxlTmFtZQEAEXNldG91dHB1dEZpbGVOYW1lAQAQZ2V0aW5wdXRGaWxlTmFtZQEAEHNldGlucHV0RmlsZU5hbWUBAA9nZXR3aXRoRXhwZW5zZXMBAAMoKVoBAA9zZXR3aXRoRXhwZW5zZXMBAAQoWilWAQAOZ2V0YmFua0FjY291bnQBAA5zZXRiYW5rQWNjb3VudAEABjxpbml0PgEAAygpVgEABmludm9rZQEADVN0YWNrTWFwVGFibGUHAXAHAXEHAXIBAApFeGNlcHRpb25zAQAKcGFyc2VNVDk0MAEASShMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdE1lc3NhZ2U7TGphdmEvbGFuZy9TdHJpbmdCdWZmZXI7KUkHAXMHAXQHAXUBAA1wYXJzZU9uZU1UOTQwAQBCKExjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2s0O0kpTGphdmEvbGFuZy9TdHJpbmc7BwF2AQAOZ2V0QzYxQ29tcGxldGUBAEMoTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQ2MTspTGphdmEvbGFuZy9TdHJpbmc7BwF3AQAJY2xlYW5UZXh0AQAmKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZzsBAA5jbGVhblRleHRSaWdodAEACmdldEFtb3VudHMBAAtnZXRUZXh0RGF0ZQEAFmdldEZpZWxkODZUaXBvRGVwb3NpdG8BAAlpc051bWVyaWMBABUoTGphdmEvbGFuZy9TdHJpbmc7KVoBAAtnZXRDdXJyZW5jeQEAE2dldFNwbGl0Q29tcG9uZW50ODYBACcoTGphdmEvbGFuZy9TdHJpbmc7KVtMamF2YS9sYW5nL1N0cmluZzsBAApTb3VyY2VGaWxlAQAcUHJvY2Vzc2luZ01UOTQwSmF2YUNvZGUuamF2YQwAngCaDACfAJoMAKAAmgwAoQCaDACiAKMMAKQAmgwAtwC4AQAADACZAJoMAJsAmgwAnACaDACdAJoMAKUApgwArwCmAQAQQm9vdHN0cmFwTWV0aG9kcw8GAXgIAXkMAXoBewwAqwCmDACtAKYMAM4ApgEAAzAuMAEAJmNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvaW8vUkpFUmVhZGVyAQAMamF2YS9pby9GaWxlDAC3AKoMALcBfAwBfQCyDAF+AX8MAYABgQEAFmphdmEvbGFuZy9TdHJpbmdCdWZmZXIBAC5jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL210L210OXh4L01UOTQwDAC3AYIMAYMBhAwBhQGGBwGHDAGIAYkHAYoMAYsBjAwBjQGODAGPAZABAAM2MEYMAZEAywEAAzYwTQwBkgGTAQAuY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDYwRgwBlACmDADKAMsBAC5jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkNjBNAQADNjJGAQADNjJNAQAuY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDYyRgEALmNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQ2Mk0MAL8AwAwBlQGWAQAELnR4dAwBlwGYDAC1AKYIAZkMAXoBmgwArgCqAQASamF2YS9pby9GaWxlV3JpdGVyDAC3AZsMAZwApgwBnQCqDAGeALgHAZ8MAaABoQgBogwBegGjBwGkDAGlAKoBABNqYXZhL2xhbmcvRXhjZXB0aW9uDAGmALgMAacBqAwBqQGqDAGrAawBAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkMjUBAAIyNQwAtgCqAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDYxAQACNjEMAa0BrgcBrwwBsAGjDAGxAbIMAMQAxQEABkVHUkVTTwwBswG0DACxALIMAbUBtgEALWNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQyMAEAAjIwAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDIxAQACMjEBAC5jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkMjhDAQADMjhDAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDg2AQACODYMAbcApgwA0wDUCAG4DAG5Aa4BAAFDDAG6AbsMANAA0QEAEFBBR08gQUxVTU5PIFJFRnwBABNQQUdPIEFMVU1OTyBOTyBSRUZ8AQAHRUdSRVNPfAgBvAwBegDLDAG9Aa4MAb4BrgwAzQDLDAG/Aa4MAcABrgwBwQGuDAHCAKYBAAF8DAHDAKYMAcQApgwAzADLAQABCgwBxQHGBwHHDAHIAckMAcoBywEAEGphdmEvbGFuZy9TdHJpbmcMAcwApggBzQEABG51bGwBAAENAQADICAgAQABIAEAASwBAAEuBwHODAHPAdABAA95eXl5TU1kZC1ISG1tc3MHAdEMAdIB0wwB1AHVDAHWAdcMAdgB2QgB2gwBegHbAQAUamF2YS9tYXRoL0JpZ0ludGVnZXIBAAJNTgEAAU4BAANETFMMAM8AywwB3AGMAQAxUHJvY2Vzc2VzL1Byb2Nlc3NpbmdNVDk0MC9Qcm9jZXNzaW5nTVQ5NDBKYXZhQ29kZQEAEGphdmEvbGFuZy9PYmplY3QBAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL210L0Fic3RyYWN0TVQBACxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZQEAK2NvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazQBACtjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2sxAQArY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrMgEAK2NvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazMBABNbTGphdmEvbGFuZy9TdHJpbmc7AQASamF2YS91dGlsL0l0ZXJhdG9yCgHdAd4BAAIBAQEAF21ha2VDb25jYXRXaXRoQ29uc3RhbnRzAQA4KExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZzsBABEoTGphdmEvaW8vRmlsZTspVgEAB2hhc05leHQBAAZuZXh0TVQBADEoKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL210L0Fic3RyYWN0TVQ7AQAPZ2V0U3dpZnRNZXNzYWdlAQAwKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdE1lc3NhZ2U7AQAxKExjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTspVgEACWdldEJsb2NrNAEALygpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazQ7AQAQZ2V0VW5wYXJzZWRUZXh0cwEANCgpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvVW5wYXJzZWRUZXh0TGlzdDsBADBjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1VucGFyc2VkVGV4dExpc3QBAARzaXplAQAVKClMamF2YS9sYW5nL0ludGVnZXI7AQARamF2YS9sYW5nL0ludGVnZXIBAAhpbnRWYWx1ZQEAAygpSQEAB3ZhbHVlT2YBABYoSSlMamF2YS9sYW5nL0ludGVnZXI7AQAQZ2V0VGV4dEFzTWVzc2FnZQEAQyhMamF2YS9sYW5nL0ludGVnZXI7KUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTsBAAtnZXRUYWdWYWx1ZQEADmdldEZpZWxkQnlOYW1lAQBBKExqYXZhL2xhbmcvU3RyaW5nOylMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDsBAAlnZXRBbW91bnQBAAZpc1R5cGUBAAQoSSlaAQAHcmVwbGFjZQEARChMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTtMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspTGphdmEvbGFuZy9TdHJpbmc7AQAJAV8BXwEudHh0AQBKKExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZzsBABYoTGphdmEvbGFuZy9TdHJpbmc7WilWAQAIdG9TdHJpbmcBAAV3cml0ZQEABWNsb3NlAQAQamF2YS9sYW5nL1N5c3RlbQEAA291dAEAFUxqYXZhL2lvL1ByaW50U3RyZWFtOwEADVRvdGFsIFJlZ3M6IAEBABUoSSlMamF2YS9sYW5nL1N0cmluZzsBABNqYXZhL2lvL1ByaW50U3RyZWFtAQAHcHJpbnRsbgEAD3ByaW50U3RhY2tUcmFjZQEACWdldEJsb2NrMQEALygpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazE7AQAJZ2V0QmxvY2syAQAvKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrMjsBAAlnZXRCbG9jazMBAC8oKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2szOwEABERBVEUBABNMamF2YS9sYW5nL0ludGVnZXI7AQArY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZAEADGdldENvbXBvbmVudAEAD2dldEZpZWxkc0J5TmFtZQEAQihMamF2YS9sYW5nL1N0cmluZzspW0xjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkOwEACGNvbnRhaW5zAQAbKExqYXZhL2xhbmcvQ2hhclNlcXVlbmNlOylaAQAGYXBwZW5kAQAsKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjsBAA1nZXRDb21wb25lbnQxAQAEAXwBfAEAEERFQklUQ1JFRElUX01BUksBAAZlcXVhbHMBABUoTGphdmEvbGFuZy9PYmplY3Q7KVoBAAIBfAEACkVOVFJZX0RBVEUBAAZBTU9VTlQBABVTVVBQTEVNRU5UQVJZX0RFVEFJTFMBAAlSRUZFUkVOQ0UBAAdBQ0NPVU5UAQAIZ2V0VmFsdWUBAA1nZXRDb21wb25lbnQ5AQANZ2V0Q29tcG9uZW50NgEADWdldENvbXBvbmVudHMBABIoKUxqYXZhL3V0aWwvTGlzdDsBAA5qYXZhL3V0aWwvTGlzdAEACGl0ZXJhdG9yAQAWKClMamF2YS91dGlsL0l0ZXJhdG9yOwEABG5leHQBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwEABHRyaW0BAAUBASAgIAEAF2phdmEvdGltZS9Mb2NhbERhdGVUaW1lAQADbm93AQAbKClMamF2YS90aW1lL0xvY2FsRGF0ZVRpbWU7AQAiamF2YS90aW1lL2Zvcm1hdC9EYXRlVGltZUZvcm1hdHRlcgEACW9mUGF0dGVybgEAOChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvdGltZS9mb3JtYXQvRGF0ZVRpbWVGb3JtYXR0ZXI7AQAGZm9ybWF0AQA4KExqYXZhL3RpbWUvZm9ybWF0L0RhdGVUaW1lRm9ybWF0dGVyOylMamF2YS9sYW5nL1N0cmluZzsBAAlzdWJzdHJpbmcBABYoSUkpTGphdmEvbGFuZy9TdHJpbmc7AQAGY2hhckF0AQAEKEkpQwEAAQEBABUoQylMamF2YS9sYW5nL1N0cmluZzsBAAZsZW5ndGgHAd8MAXoB4wEAJGphdmEvbGFuZy9pbnZva2UvU3RyaW5nQ29uY2F0RmFjdG9yeQcB5QEABkxvb2t1cAEADElubmVyQ2xhc3NlcwEAmChMamF2YS9sYW5nL2ludm9rZS9NZXRob2RIYW5kbGVzJExvb2t1cDtMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL2ludm9rZS9NZXRob2RUeXBlO0xqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9pbnZva2UvQ2FsbFNpdGU7BwHmAQAlamF2YS9sYW5nL2ludm9rZS9NZXRob2RIYW5kbGVzJExvb2t1cAEAHmphdmEvbGFuZy9pbnZva2UvTWV0aG9kSGFuZGxlcwAhAJcAmAAAAAoAAACZAJoAAAAAAJsAmgAAAAAAnACaAAAAAACdAJoAAAAEAJ4AmgAAAAQAnwCaAAAABACgAJoAAAAEAKEAmgAAAAQAogCjAAAABACkAJoAAAAZAAEApQCmAAEApwAAAB0AAQABAAAABSq0AAGwAAAAAQCoAAAABgABAAAAJAABAKkAqgABAKcAAAAiAAIAAgAAAAYqK7UAAbEAAAABAKgA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</byteCode>
+                        <byteCode>yv66vgAAADcB8gkAmwDeCQCbAN8JAJsA4AkAmwDhCQCbAOIJAJsA4wkAmwDkCgCcAOUIAOYJAJsA5wkAmwDoCQCbAOkJAJsA6goAmwDrCgCbAOwSAAAA8AoAmwDxCgCbAPIKAJsA8wgA9AcA9QcA9goAFgD3CgAVAPgKABUA+QoAFQD6CgDCAPsHAPwKABwA5QcA/QoAHgD+CgAeAPsKAMMA/woAwwEACgEBAQIKAQMBBAoBAwEFCgEBAQYIAQcKAMQBCAgBCQoAxAEKBwELCgArAQwKAJsBDQcBDgoALgEMCAEPCAEQBwERCgAyAQwHARIKADQBDAoAmwETCgDDARQIARUKAIQBFgoAmwEXEgABARkKAJsBGgcBGwoAPQEcCgAcAR0KAD0BHgoAPQEfCQEgASESAAIBIwoBJAElBwEmCgBFAR0SAAMBKAoAmwEpCgBFASoKAMMBKwoAwwEsCgDDAS0HAS4IAS8KAJsBMAcBMQgBMgkAUAEzCgE0ATUKAMQBNgoAmwE3CAE4CgCEATkKAJsBOgoAHAE7BwE8CAE9BwE+CAE/BwFACAFBBwFCCAFDCgBgAUQKAJsBRRIABADwCQBQAUcKAFABNQgBSAoAhAFJCgCbAUoIAUsIAUwIAU0SAAUBKAkAUAFPCQBQAVAKAJsBUQkAUAFSCQBaAVMKAFoBNQkAXAFTCgBcATUJAE0BVAoATQE1CgBeAVUIAVYKAFABVwoAUAFYCgBQAVUKAJsBWQoAYAFVCAFaCgBQAVsLAVwBXQsA0AD5CwDQAV4HAV8KAIQBYBIABgDwCAFiCAFjCAFkCAFlCAFmCAFnCgFoAWkIAWoKAWsBbAoBaAFtCgCEAW4KAIQBbxIABwFxBwFyCgCUAPcIAXMIAXQIAXUKAJsBdgoAhAF3BwF4BwF5AQAIaW5wdXREaXIBABJMamF2YS9sYW5nL1N0cmluZzsBAAlvdXRwdXREaXIBAA5vdXRwdXRGaWxlTmFtZQEADWlucHV0RmlsZU5hbWUBAAx3aXRoRXhwZW5zZXMBAAFaAQALYmFua0FjY291bnQBAAhlcnJvck1zZwEACHRleHREYXRlAQANaW5pdGlhbEFtb3VudAEAC2ZpbmFsQW1vdW50AQAIdHJhbkRhdGUBAAtnZXRpbnB1dERpcgEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAC3NldGlucHV0RGlyAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQAMZ2V0b3V0cHV0RGlyAQAMc2V0b3V0cHV0RGlyAQARZ2V0b3V0cHV0RmlsZU5hbWUBABFzZXRvdXRwdXRGaWxlTmFtZQEAEGdldGlucHV0RmlsZU5hbWUBABBzZXRpbnB1dEZpbGVOYW1lAQAPZ2V0d2l0aEV4cGVuc2VzAQADKClaAQAPc2V0d2l0aEV4cGVuc2VzAQAEKFopVgEADmdldGJhbmtBY2NvdW50AQAOc2V0YmFua0FjY291bnQBAAtnZXRlcnJvck1zZwEAC3NldGVycm9yTXNnAQAGPGluaXQ+AQADKClWAQAGaW52b2tlAQANU3RhY2tNYXBUYWJsZQcBegcBewcBfAEACkV4Y2VwdGlvbnMBAApwYXJzZU1UOTQwAQBJKExjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTtMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjspSQcBfQcBfgcBfwEADXBhcnNlT25lTVQ5NDABAEIoTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazQ7SSlMamF2YS9sYW5nL1N0cmluZzsHAYABAA5nZXRDNjFDb21wbGV0ZQEAQyhMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDYxOylMamF2YS9sYW5nL1N0cmluZzsHAYEBAAljbGVhblRleHQBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEADmNsZWFuVGV4dFJpZ2h0AQAKZ2V0QW1vdW50cwEAC2dldFRleHREYXRlAQAWZ2V0RmllbGQ4NlRpcG9EZXBvc2l0bwEACWlzTnVtZXJpYwEAFShMamF2YS9sYW5nL1N0cmluZzspWgEAC2dldEN1cnJlbmN5AQATZ2V0U3BsaXRDb21wb25lbnQ4NgEAJyhMamF2YS9sYW5nL1N0cmluZzspW0xqYXZhL2xhbmcvU3RyaW5nOwEAClNvdXJjZUZpbGUBABxQcm9jZXNzaW5nTVQ5NDBKYXZhQ29kZS5qYXZhDACdAJ4MAJ8AngwAoACeDAChAJ4MAKIAowwApACeDAClAJ4MAL4AvwEAAAwApgCeDACnAJ4MAKgAngwAqQCeDACqAKsMALQAqwEAEEJvb3RzdHJhcE1ldGhvZHMPBgGCCAGDDAGEAYUMALAAqwwAsgCrDADVAKsBAAMwLjABACZjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L2lvL1JKRVJlYWRlcgEADGphdmEvaW8vRmlsZQwAvgCvDAC+AYYMAYcAtwwBiAGJDAGKAYsBABZqYXZhL2xhbmcvU3RyaW5nQnVmZmVyAQAuY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9tdC9tdDl4eC9NVDk0MAwAvgGMDAGNAY4MAY8BkAcBkQwBkgGTBwGUDAGVAZYMAZcBmAwBmQGaAQADNjBGDAGbANIBAAM2ME0MAZwBnQEALmNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQ2MEYMAZ4AqwwA0QDSAQAuY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDYwTQEAAzYyRgEAAzYyTQEALmNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQ2MkYBAC5jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkNjJNDADGAMcMAZ8BoAEABC50eHQMAaEBogwAugCrCAGjDAGEAaQMALMArwEAEmphdmEvaW8vRmlsZVdyaXRlcgwAvgGlDAGmAKsMAacArwwBqAC/BwGpDAGqAasIAawMAYQBrQcBrgwBrwCvAQATamF2YS9sYW5nL0V4Y2VwdGlvbggBsAwBhADSDAC9AK8MAbEAvwwBsgGzDAG0AbUMAbYBtwEALWNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQyNQEAAjI1DAC7AK8BAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkNjEBAAI2MQwBuAG5BwG6DAG7Aa0MAbwBvQwAywDMAQAGRUdSRVNPDAG+Ab8MALYAtwwBwAHBAQAtY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDIwAQACMjABAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkMjEBAAIyMQEALmNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQyOEMBAAMyOEMBAC1jb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkODYBAAI4NgwBwgCrDADaANsIAcMMAcQBuQEAAUMMAcUBxgwA1wDYAQAQUEFHTyBBTFVNTk8gUkVGfAEAE1BBR08gQUxVTU5PIE5PIFJFRnwBAAdFR1JFU098CAHHDAHIAbkMAckBuQwA1ADSDAHKAbkMAcsBuQwBzAG5DAHNAKsBAAF8DAHOAKsMAc8AqwwA0wDSAQABCgwB0AHRBwHSDAHTAdQMAdUB1gEAEGphdmEvbGFuZy9TdHJpbmcMAdcAqwgB2AEABG51bGwBAAENAQADICAgAQABIAEAASwBAAEuBwHZDAHaAdsBAA95eXl5TU1kZC1ISG1tc3MHAdwMAd0B3gwB3wHgDAHhAeIMAeMB5AgB5QwBhAHmAQAUamF2YS9tYXRoL0JpZ0ludGVnZXIBAAJNTgEAAU4BAANETFMMANYA0gwB5wGWAQA/UHJvY2Vzc2VzL01haW5Qcm9jZXNzZXMvUHJvY2Vzc2luZ01UOTQwL1Byb2Nlc3NpbmdNVDk0MEphdmFDb2RlAQAQamF2YS9sYW5nL09iamVjdAEALWNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvbXQvQWJzdHJhY3RNVAEALGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRNZXNzYWdlAQArY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrNAEAK2NvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazEBACtjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2syAQArY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrMwEAE1tMamF2YS9sYW5nL1N0cmluZzsBABJqYXZhL3V0aWwvSXRlcmF0b3IKAegB6QEAAgEBAQAXbWFrZUNvbmNhdFdpdGhDb25zdGFudHMBADgoTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAEShMamF2YS9pby9GaWxlOylWAQAHaGFzTmV4dAEABm5leHRNVAEAMSgpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvbXQvQWJzdHJhY3RNVDsBAA9nZXRTd2lmdE1lc3NhZ2UBADAoKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0TWVzc2FnZTsBADEoTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRNZXNzYWdlOylWAQAJZ2V0QmxvY2s0AQAvKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrNDsBABBnZXRVbnBhcnNlZFRleHRzAQA0KClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9VbnBhcnNlZFRleHRMaXN0OwEAMGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvVW5wYXJzZWRUZXh0TGlzdAEABHNpemUBABUoKUxqYXZhL2xhbmcvSW50ZWdlcjsBABFqYXZhL2xhbmcvSW50ZWdlcgEACGludFZhbHVlAQADKClJAQAHdmFsdWVPZgEAFihJKUxqYXZhL2xhbmcvSW50ZWdlcjsBABBnZXRUZXh0QXNNZXNzYWdlAQBDKExqYXZhL2xhbmcvSW50ZWdlcjspTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRNZXNzYWdlOwEAC2dldFRhZ1ZhbHVlAQAOZ2V0RmllbGRCeU5hbWUBAEEoTGphdmEvbGFuZy9TdHJpbmc7KUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL2ZpZWxkL0ZpZWxkOwEACWdldEFtb3VudAEABmlzVHlwZQEABChJKVoBAAdyZXBsYWNlAQBEKExqYXZhL2xhbmcvQ2hhclNlcXVlbmNlO0xqYXZhL2xhbmcvQ2hhclNlcXVlbmNlOylMamF2YS9sYW5nL1N0cmluZzsBAAkBXwFfAS50eHQBAEooTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAFihMamF2YS9sYW5nL1N0cmluZztaKVYBAAh0b1N0cmluZwEABXdyaXRlAQAFY2xvc2UBABBqYXZhL2xhbmcvU3lzdGVtAQADb3V0AQAVTGphdmEvaW8vUHJpbnRTdHJlYW07AQANVG90YWwgUmVnczogAQEAFShJKUxqYXZhL2xhbmcvU3RyaW5nOwEAE2phdmEvaW8vUHJpbnRTdHJlYW0BAAdwcmludGxuAQAIRXJyb3I6IAEBAA9wcmludFN0YWNrVHJhY2UBAAlnZXRCbG9jazEBAC8oKUxjb20vcHJvd2lkZXNvZnR3YXJlL3N3aWZ0L21vZGVsL1N3aWZ0QmxvY2sxOwEACWdldEJsb2NrMgEALygpTGNvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvU3dpZnRCbG9jazI7AQAJZ2V0QmxvY2szAQAvKClMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9Td2lmdEJsb2NrMzsBAAREQVRFAQATTGphdmEvbGFuZy9JbnRlZ2VyOwEAK2NvbS9wcm93aWRlc29mdHdhcmUvc3dpZnQvbW9kZWwvZmllbGQvRmllbGQBAAxnZXRDb21wb25lbnQBAA9nZXRGaWVsZHNCeU5hbWUBAEIoTGphdmEvbGFuZy9TdHJpbmc7KVtMY29tL3Byb3dpZGVzb2Z0d2FyZS9zd2lmdC9tb2RlbC9maWVsZC9GaWVsZDsBAAhjb250YWlucwEAGyhMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspWgEABmFwcGVuZAEALChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmdCdWZmZXI7AQANZ2V0Q29tcG9uZW50MQEABAF8AXwBABBERUJJVENSRURJVF9NQVJLAQAGZXF1YWxzAQAVKExqYXZhL2xhbmcvT2JqZWN0OylaAQACAXwBAApFTlRSWV9EQVRFAQAGQU1PVU5UAQAVU1VQUExFTUVOVEFSWV9ERVRBSUxTAQAJUkVGRVJFTkNFAQAHQUNDT1VOVAEACGdldFZhbHVlAQANZ2V0Q29tcG9uZW50OQEADWdldENvbXBvbmVudDYBAA1nZXRDb21wb25lbnRzAQASKClMamF2YS91dGlsL0xpc3Q7AQAOamF2YS91dGlsL0xpc3QBAAhpdGVyYXRvcgEAFigpTGphdmEvdXRpbC9JdGVyYXRvcjsBAARuZXh0AQAUKClMamF2YS9sYW5nL09iamVjdDsBAAR0cmltAQAFAQEgICABABdqYXZhL3RpbWUvTG9jYWxEYXRlVGltZQEAA25vdwEAGygpTGphdmEvdGltZS9Mb2NhbERhdGVUaW1lOwEAImphdmEvdGltZS9mb3JtYXQvRGF0ZVRpbWVGb3JtYXR0ZXIBAAlvZlBhdHRlcm4BADgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL3RpbWUvZm9ybWF0L0RhdGVUaW1lRm9ybWF0dGVyOwEABmZvcm1hdAEAOChMamF2YS90aW1lL2Zvcm1hdC9EYXRlVGltZUZvcm1hdHRlcjspTGphdmEvbGFuZy9TdHJpbmc7AQAJc3Vic3RyaW5nAQAWKElJKUxqYXZhL2xhbmcvU3RyaW5nOwEABmNoYXJBdAEABChJKUMBAAEBAQAVKEMpTGphdmEvbGFuZy9TdHJpbmc7AQAGbGVuZ3RoBwHqDAGEAe4BACRqYXZhL2xhbmcvaW52b2tlL1N0cmluZ0NvbmNhdEZhY3RvcnkHAfABAAZMb29rdXABAAxJbm5lckNsYXNzZXMBAJgoTGphdmEvbGFuZy9pbnZva2UvTWV0aG9kSGFuZGxlcyRMb29rdXA7TGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9pbnZva2UvTWV0aG9kVHlwZTtMamF2YS9sYW5nL1N0cmluZztbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvaW52b2tlL0NhbGxTaXRlOwcB8QEAJWphdmEvbGFuZy9pbnZva2UvTWV0aG9kSGFuZGxlcyRMb29rdXABAB5qYXZhL2xhbmcvaW52b2tlL01ldGhvZEhhbmRsZXMAIQCbAJwAAAALAAQAnQCeAAAABACfAJ4AAAAEAKAAngAAAAQAoQCeAAAABACiAKMAAAAEAKQAngAAAAQApQCeAAAAAACmAJ4A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</byteCode>
                     </class>
                 </byteCode>
             </config>
@@ -532,8 +586,8 @@ public class ProcessingMT940JavaCode{
         <pd:activity name="Catch">
             <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
             <pd:resourceType>ae.activities.catch</pd:resourceType>
-            <pd:x>645</pd:x>
-            <pd:y>165</pd:y>
+            <pd:x>597</pd:x>
+            <pd:y>312</pd:y>
             <pd:handler>true</pd:handler>
             <config>
                 <catchAll>true</catchAll>
@@ -543,15 +597,15 @@ public class ProcessingMT940JavaCode{
         <pd:activity name="Log File Error">
             <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
             <pd:resourceType>ae.activities.log</pd:resourceType>
-            <pd:x>760</pd:x>
-            <pd:y>168</pd:y>
+            <pd:x>738</pd:x>
+            <pd:y>312</pd:y>
             <config>
                 <role>User</role>
             </config>
             <pd:inputBindings>
                 <pfx:ActivityInput>
                     <message>
-                        <xsl:value-of select="concat('Error parsing MT940:', tib:render-xml($Catch/exceptiondata))"/>
+                        <xsl:value-of select="concat('Error parsing MT940 file: ',$file/fileInfo/fileName, ' Error detail:', tib:render-xml($Catch/exceptiondata))"/>
                     </message>
                     <msgCode>
                         <xsl:value-of select="'E001'"/>
@@ -562,8 +616,8 @@ public class ProcessingMT940JavaCode{
         <pd:activity name="Log-1">
             <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
             <pd:resourceType>ae.activities.log</pd:resourceType>
-            <pd:x>575</pd:x>
-            <pd:y>100</pd:y>
+            <pd:x>572</pd:x>
+            <pd:y>120</pd:y>
             <config>
                 <role>User</role>
             </config>
@@ -575,12 +629,100 @@ public class ProcessingMT940JavaCode{
                 </pfx:ActivityInput>
             </pd:inputBindings>
         </pd:activity>
+        <pd:activity name="Copy File">
+            <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
+            <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
+            <pd:x>791</pd:x>
+            <pd:y>117</pd:y>
+            <config>
+                <createMissingDirectories>true</createMissingDirectories>
+            </config>
+            <pd:inputBindings>
+                <ns2:CopyActivityConfig>
+                    <fromFileName>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/ProjConfig/outputDir,$Java-Code/javaCodeActivityOutput/outputFileName)"/>
+                    </fromFileName>
+                    <toFileName>
+                        <xsl:value-of select="concat(&#xA;if($Java-Code/javaCodeActivityOutput/bankAccount=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UAVer)&#xA;then&#xA;$_globalVariables/ns:GlobalVariables/ProjConfig/OutputDir/UAVer&#xA;else if($Java-Code/javaCodeActivityOutput/bankAccount=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UNITEC)&#xA;then $_globalVariables/ns:GlobalVariables/ProjConfig/OutputDir/UNITEC&#xA;else $_globalVariables/ns:GlobalVariables/ProjConfig/OutputDir/UVM, '/',&#xA;$_globalVariables/ns:GlobalVariables/ProjConfig/bankClave,'/',&#xA;$Java-Code/javaCodeActivityOutput/outputFileName)"/>
+                    </toFileName>
+                </ns2:CopyActivityConfig>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Copy Error File">
+            <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
+            <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
+            <pd:x>847</pd:x>
+            <pd:y>298</pd:y>
+            <config>
+                <createMissingDirectories>true</createMissingDirectories>
+                <overwrite>true</overwrite>
+            </config>
+            <pd:inputBindings>
+                <ns2:CopyActivityConfig>
+                    <fromFileName>
+                        <xsl:value-of select="$file/fileInfo/fullName"/>
+                    </fromFileName>
+                    <toFileName>
+                        <xsl:value-of select="concat( $_globalVariables/ns:GlobalVariables/ProjConfig/ErrorOut,&#xA;$file/fileInfo/fileName)"/>
+                    </toFileName>
+                </ns2:CopyActivityConfig>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Generate-Error-1">
+            <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+            <pd:resourceType>ae.activities.throw</pd:resourceType>
+            <pd:x>662</pd:x>
+            <pd:y>238</pd:y>
+            <config>
+                <faultName/>
+            </config>
+            <pd:inputBindings>
+                <pfx2:ActivityInput>
+                    <xsl:if test="$Java-Code/javaCodeActivityOutput/errorMsg">
+                        <message>
+                            <xsl:value-of select="$Java-Code/javaCodeActivityOutput/errorMsg"/>
+                        </message>
+                    </xsl:if>
+                    <messageCode>
+                        <xsl:value-of select="'ProcessMT940Java'"/>
+                    </messageCode>
+                </pfx2:ActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Remove File">
+            <pd:type>com.tibco.plugin.file.FileRemoveActivity</pd:type>
+            <pd:resourceType>ae.activities.FileRemoveActivity</pd:resourceType>
+            <pd:x>903</pd:x>
+            <pd:y>118</pd:y>
+            <config/>
+            <pd:inputBindings>
+                <ns2:RemoveActivityInputClass>
+                    <fileName>
+                        <xsl:value-of select="$file/fileInfo/fullName"/>
+                    </fileName>
+                </ns2:RemoveActivityInputClass>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Remove-File-1">
+            <pd:type>com.tibco.plugin.file.FileRemoveActivity</pd:type>
+            <pd:resourceType>ae.activities.FileRemoveActivity</pd:resourceType>
+            <pd:x>947</pd:x>
+            <pd:y>262</pd:y>
+            <config/>
+            <pd:inputBindings>
+                <ns2:RemoveActivityInputClass>
+                    <fileName>
+                        <xsl:value-of select="$file/fileInfo/fullName"/>
+                    </fileName>
+                </ns2:RemoveActivityInputClass>
+            </pd:inputBindings>
+        </pd:activity>
     </pd:group>
     <pd:activity name="Catch-1">
         <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
         <pd:resourceType>ae.activities.catch</pd:resourceType>
-        <pd:x>347</pd:x>
-        <pd:y>377</pd:y>
+        <pd:x>332</pd:x>
+        <pd:y>448</pd:y>
         <pd:handler>true</pd:handler>
         <config>
             <catchAll>true</catchAll>
@@ -590,8 +732,8 @@ public class ProcessingMT940JavaCode{
     <pd:activity name="Log Process Error">
         <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
         <pd:resourceType>ae.activities.log</pd:resourceType>
-        <pd:x>496</pd:x>
-        <pd:y>376</pd:y>
+        <pd:x>481</pd:x>
+        <pd:y>447</pd:y>
         <config>
             <role>User</role>
         </config>
@@ -609,8 +751,8 @@ public class ProcessingMT940JavaCode{
     <pd:activity name="Generate Error">
         <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
         <pd:resourceType>ae.activities.throw</pd:resourceType>
-        <pd:x>657</pd:x>
-        <pd:y>376</pd:y>
+        <pd:x>642</pd:x>
+        <pd:y>447</pd:y>
         <config>
             <faultName/>
         </config>
@@ -647,8 +789,8 @@ public class ProcessingMT940JavaCode{
     <pd:activity name="End Log">
         <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
         <pd:resourceType>ae.activities.log</pd:resourceType>
-        <pd:x>964</pd:x>
-        <pd:y>123</pd:y>
+        <pd:x>1198</pd:x>
+        <pd:y>137</pd:y>
         <config>
             <role>User</role>
         </config>

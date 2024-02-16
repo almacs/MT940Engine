@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns13="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns12="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <pd:name>Processes/SaveInfoInDBBatch.process</pd:name>
+    <pd:name>Processes/Main Processes/SaveInfoInDBBatch (1).process</pd:name>
     <pd:startName>Start</pd:startName>
     <pd:startX>28</pd:startX>
     <pd:startY>89</pd:startY>
@@ -111,8 +111,8 @@
         <pd:activity name="Read File">
             <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
             <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
-            <pd:x>434</pd:x>
-            <pd:y>97</pd:y>
+            <pd:x>442</pd:x>
+            <pd:y>81</pd:y>
             <config>
                 <encoding>text</encoding>
             </config>
@@ -127,8 +127,8 @@
         <pd:activity name="Parse Data">
             <pd:type>com.tibco.plugin.parse.ParseActivity</pd:type>
             <pd:resourceType>ae.activities.ParseActivity</pd:resourceType>
-            <pd:x>525</pd:x>
-            <pd:y>86</pd:y>
+            <pd:x>530</pd:x>
+            <pd:y>74</pd:y>
             <config>
                 <InputType>String</InputType>
                 <Encoding>ASCII</Encoding>
@@ -150,8 +150,8 @@
         <pd:activity name="Assign">
             <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
             <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
-            <pd:x>641</pd:x>
-            <pd:y>89</pd:y>
+            <pd:x>664</pd:x>
+            <pd:y>78</pd:y>
             <config>
                 <variableName>Variable0</variableName>
             </config>
@@ -166,8 +166,8 @@
         <pd:activity name="Copy File">
             <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
             <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
-            <pd:x>979</pd:x>
-            <pd:y>142</pd:y>
+            <pd:x>940</pd:x>
+            <pd:y>85</pd:y>
             <config>
                 <createMissingDirectories>true</createMissingDirectories>
             </config>
@@ -199,14 +199,14 @@
         <pd:activity name="JDBC Update">
             <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
             <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
-            <pd:x>797</pd:x>
-            <pd:y>108</pd:y>
+            <pd:x>795</pd:x>
+            <pd:y>84</pd:y>
             <config>
                 <timeout>350</timeout>
                 <commit>false</commit>
                 <emptyStrAsNil>false</emptyStrAsNil>
                 <jdbcSharedConfig>/Shared Resources/JDBC Connection.sharedjdbc</jdbcSharedConfig>
-                <statement>insert into  MT940_BBVA_2_ACS (ID_EJECUCION,
+                <statement>insert into  MT940_BBVA_2_ACS_2 (ID_EJECUCION,
 NOMBRE_ARCHIVO,
 TIPO_TRANSACCION,
 C86_REFERENCIA_ALUMNO,

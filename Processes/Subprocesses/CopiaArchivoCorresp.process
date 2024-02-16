@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.tibco.com/pe/EngineTypes" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns3="http://www.tibco.com/pe/WriteToLogActivitySchema">
+    <pd:name>Processes/Subprocesses/CopiaArchivoCorresp.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>30</pd:startX>
+    <pd:startY>141</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1417</pd:endX>
+    <pd:endY>140</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1342634316387</pd:targetNamespace>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>305</pd:x>
+        <pd:y>1</pd:y>
+        <pd:width>762</pd:width>
+        <pd:height>256</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>inputLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:over>$SFTP-Dir/Output/DirectoryItems</pd:over>
+            <pd:iterationElementSlot>file</pd:iterationElementSlot>
+            <pd:indexSlot>idx</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>SFTP Get</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>SFTP Delete File</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>SFTP Get</pd:from>
+            <pd:to>SFTP Put</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>SFTP Put</pd:from>
+            <pd:to>SFTP Delete File</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="SFTP Get">
+            <pd:type>com.tibco.plugin.sp.SFTPGetActivity</pd:type>
+            <pd:resourceType>ae.activities.SFTPGetActivityUI</pd:resourceType>
+            <pd:x>422</pd:x>
+            <pd:y>145</pd:y>
+            <config>
+                <Timeout>120000</Timeout>
+                <isBinary>false</isBinary>
+                <Overwrite>true</Overwrite>
+                <useProcessData>false</useProcessData>
+                <persistTimestamp>false</persistTimestamp>
+                <SharedUserData>/SharedResources/Connections/SFTP/SFTP_CORRESP.sharedsftp</SharedUserData>
+                <logout>false</logout>
+            </config>
+            <pd:inputBindings>
+                <SFTPGetInputDataFile>
+                    <RemoteFileName>
+                        <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/CorrespBan/CORRESP_sFTP/RemotePathFiles,&quot;/&quot;,$file/DirectoryItems)"/>
+                    </RemoteFileName>
+                    <LocalFileName>
+                        <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/CorrespBan/LocalFilePath,&quot;/&quot;,$file/DirectoryItems)"/>
+                    </LocalFileName>
+                </SFTPGetInputDataFile>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="SFTP Put">
+            <pd:type>com.tibco.plugin.sp.SFTPPutActivity</pd:type>
+            <pd:resourceType>ae.activities.SFTPPutActivityUI</pd:resourceType>
+            <pd:x>628</pd:x>
+            <pd:y>145</pd:y>
+            <config>
+                <Timeout>120000</Timeout>
+                <FireWall>false</FireWall>
+                <isBinary>false</isBinary>
+                <Append>false</Append>
+                <useProcessData>false</useProcessData>
+                <persistTimestamp>false</persistTimestamp>
+                <Overwrite>true</Overwrite>
+                <SharedUserData>/SharedResources/Connections/SFTP/SFTP_CORRESP.sharedsftp</SharedUserData>
+                <logout>false</logout>
+            </config>
+            <pd:inputBindings>
+                <SFTPPutInputDataFile>
+                    <RemoteFileName>
+                        <xsl:value-of select="concat(  $_globalVariables/ns1:GlobalVariables/CorrespBan/CORRESP_sFTP/RemoteProcecedPath,&quot;/&quot;,$file/DirectoryItems)"/>
+                    </RemoteFileName>
+                    <LocalFileName>
+                        <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/CorrespBan/LocalFilePath,&quot;/&quot;,$file/DirectoryItems)"/>
+                    </LocalFileName>
+                </SFTPPutInputDataFile>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="SFTP Delete File">
+            <pd:type>com.tibco.plugin.sp.SFTPDeleteFileActivity</pd:type>
+            <pd:resourceType>ae.activities.SFTPDeleteFileActivityUI</pd:resourceType>
+            <pd:x>873</pd:x>
+            <pd:y>145</pd:y>
+            <config>
+                <SharedUserData>/SharedResources/Connections/SFTP/SFTP_CORRESP.sharedsftp</SharedUserData>
+                <logout>false</logout>
+            </config>
+            <pd:inputBindings>
+                <Input>
+                    <RemoteFileName>
+                        <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/CorrespBan/CORRESP_sFTP/RemotePathFiles,&quot;/&quot;,$file/DirectoryItems)"/>
+                    </RemoteFileName>
+                </Input>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>1851</pd:x>
+        <pd:y>140</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="LogError">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>1653</pd:x>
+        <pd:y>140</pd:y>
+        <config>
+            <role>Info</role>
+        </config>
+        <pd:inputBindings>
+            <ns3:ActivityInput>
+                <message>
+                    <xsl:value-of select="tib:render-xml($_error/ns2:ErrorReport)"/>
+                </message>
+                <msgCode>
+                    <xsl:value-of select="&quot;ERRCPCORRESP&quot;"/>
+                </msgCode>
+            </ns3:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="SFTP Close Connection">
+        <pd:type>com.tibco.plugin.sp.SFTPCloseConnectionActivity</pd:type>
+        <pd:resourceType>ae.activities.SFTPCloseConnectionActivityUI</pd:resourceType>
+        <pd:x>1253</pd:x>
+        <pd:y>148</pd:y>
+        <config>
+            <SharedUserData>/SharedResources/Connections/SFTP/SFTP_CORRESP.sharedsftp</SharedUserData>
+        </config>
+        <pd:inputBindings>
+            <Input/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="SFTP Dir">
+        <pd:type>com.tibco.plugin.sp.SFTPDirActivity</pd:type>
+        <pd:resourceType>ae.activities.SFTPDirActivityUI</pd:resourceType>
+        <pd:x>196</pd:x>
+        <pd:y>141</pd:y>
+        <config>
+            <SharedUserData>/SharedResources/Connections/SFTP/SFTP_CORRESP.sharedsftp</SharedUserData>
+            <NLST>true</NLST>
+            <logout>false</logout>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <Directory>
+                    <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/CorrespBan/CORRESP_sFTP/RemotePathFiles,&quot;/&quot;,$_globalVariables/ns1:GlobalVariables/CorrespBan/CORRESP_sFTP/FilePattern)"/>
+                </Directory>
+                <Timeout>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/CorrespBan/CORRESP_sFTP/Timeout_milseg"/>
+                </Timeout>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>LogError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>SFTP Dir</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SFTP Dir</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>SFTP Close Connection</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogError</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SFTP Close Connection</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -2,84 +2,68 @@
 <repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
 	<globalVariables>
 		<globalVariable>
-			<name>ErrorOut</name>
-			<value>/u01/MT940/MT940Error/</value>
+			<name>FilePattern</name>
+			<value>SM418573ECR*.RES</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706136239957</modTime>
+			<modTime>1686014429631</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>bankClave</name>
-			<value>012</value>
+			<name>Password</name>
+			<value>#!pDUeRZGaeRiuMQK7GhSmWg==</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Password</type>
+			<modTime>1669321627294</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Port</name>
+			<value>22</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706062326684</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>bankCve</name>
-			<value>012</value>
+			<name>RemotePathFiles</name>
+			<value>/recibido_banorte</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1707866531902</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>copySFTP</name>
-			<value>N</value>
+			<name>RemoteProcecedPath</name>
+			<value>/ProcesadosTibco</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1707784745721</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>inputDir</name>
-			<value>/u01/MT940/input/</value>
+			<name>Timeout_milseg</name>
+			<value>900000</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706136239981</modTime>
+			<modTime>1669321627295</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>interval</name>
-			<value>300</value>
+			<name>URL</name>
+			<value>localhost</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1707769587614</modTime>
+			<modTime>1686014926637</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>outputDir</name>
-			<value>/u01/MT940/output/</value>
+			<name>Usuario</name>
+			<value>sftpbanorte</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706136239995</modTime>
-		</globalVariable>
-		<globalVariable>
-			<name>outputDirFinal</name>
-			<value>/u01/MT940/outputFinal/</value>
-			<deploymentSettable>true</deploymentSettable>
-			<serviceSettable>false</serviceSettable>
-			<type>String</type>
-			<modTime>1707763269434</modTime>
-		</globalVariable>
-		<globalVariable>
-			<name>queueToStart</name>
-			<value>laureate.mt940.start</value>
-			<deploymentSettable>true</deploymentSettable>
-			<serviceSettable>false</serviceSettable>
-			<type>String</type>
-			<modTime>1706129627513</modTime>
-		</globalVariable>
-		<globalVariable>
-			<name>withExpenses</name>
-			<value>true</value>
-			<deploymentSettable>true</deploymentSettable>
-			<serviceSettable>false</serviceSettable>
-			<type>Boolean</type>
-			<modTime>1705379942472</modTime>
+			<modTime>1669321627295</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

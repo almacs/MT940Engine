@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <pd:name>Processes/SaveInfoInDB1by1.process</pd:name>
+    <pd:name>Processes/Main Processes/SaveInfoInDB1by1.process</pd:name>
     <pd:startName>Start</pd:startName>
     <pd:startX>28</pd:startX>
     <pd:startY>89</pd:startY>

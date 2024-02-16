@@ -2,84 +2,84 @@
 <repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
 	<globalVariables>
 		<globalVariable>
-			<name>ErrorOut</name>
-			<value>/u01/MT940/MT940Error/</value>
+			<name>CLAVECONCILIA</name>
+			<value>072</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706136239957</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>bankClave</name>
-			<value>012</value>
+			<name>CLAVECORRESP</name>
+			<value>072</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706062326684</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>bankCve</name>
-			<value>012</value>
+			<name>DESCCONCILIA</name>
+			<value>Correspnsales Conciliacion</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1707866531902</modTime>
+			<modTime>1669321627295</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>copySFTP</name>
-			<value>N</value>
+			<name>DESCCORRESP</name>
+			<value>Correspnsales Banorte</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1707784745721</modTime>
+			<modTime>1669321627295</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>inputDir</name>
-			<value>/u01/MT940/input/</value>
+			<name>LocalErrorPath</name>
+			<value>/u01/tibco/interfaces/315/bancos/072/error</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706136239981</modTime>
+			<modTime>1686584326282</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>interval</name>
-			<value>300</value>
+			<name>LocalFilePath</name>
+			<value>/u01/tibco/interfaces/315/bancos/072</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1707769587614</modTime>
+			<modTime>1686584326356</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>outputDir</name>
-			<value>/u01/MT940/output/</value>
+			<name>LocalProcecedPath</name>
+			<value>/u01/tibco/interfaces/315/bancos/072/procesado</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706136239995</modTime>
+			<modTime>1686584326453</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>outputDirFinal</name>
-			<value>/u01/MT940/outputFinal/</value>
+			<name>StatusError</name>
+			<value>E</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1707763269434</modTime>
+			<modTime>1669321627295</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>queueToStart</name>
-			<value>laureate.mt940.start</value>
+			<name>StatusInProcess</name>
+			<value>P</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706129627513</modTime>
+			<modTime>1669321627295</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>withExpenses</name>
-			<value>true</value>
+			<name>StatusTerminated</name>
+			<value>T</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
-			<type>Boolean</type>
-			<modTime>1705379942472</modTime>
+			<type>String</type>
+			<modTime>1669321627295</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

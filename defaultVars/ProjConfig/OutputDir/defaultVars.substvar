@@ -2,29 +2,28 @@
 <repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
 	<globalVariables>
 		<globalVariable>
-			<name>URL</name>
-			<value>jdbc:tibcosoftwareinc:sqlserver://localhost;databaseName=Laureate</value>
+			<name>UAVer</name>
+			<value>/u01/tibco/interfaces/002/bancos/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1702995890965</modTime>
+			<modTime>1706062817313</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>password</name>
-			<value>#!GmytyxR9lHGUnoFQavEUaKq2NMcTS8LITcq7i+taliQ=</value>
-			<description></description>
-			<deploymentSettable>true</deploymentSettable>
-			<serviceSettable>false</serviceSettable>
-			<type>Password</type>
-			<modTime>1706063956756</modTime>
-		</globalVariable>
-		<globalVariable>
-			<name>user</name>
-			<value>SATURN</value>
+			<name>UNITEC</name>
+			<value>/u01/tibco/interfaces/315/bancos/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1703039786696</modTime>
+			<modTime>1706062817357</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>UVM</name>
+			<value>/u01/tibco/interfaces/001/bancos/</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1706062817338</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

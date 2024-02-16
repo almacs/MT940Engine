@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>SFTP_CORRESP</name>
+    <resourceType>ae.shared.SFTPuserChannel</resourceType>
+    <config>
+        <Timeout>60000</Timeout>
+        <Port>%%CorrespBan/CORRESP_sFTP/Port%%</Port>
+        <PrivKeyVerification>true</PrivKeyVerification>
+        <StrictHostkeyCheck>false</StrictHostkeyCheck>
+        <Host>%%CorrespBan/CORRESP_sFTP/URL%%</Host>
+        <Password>%%CorrespBan/CORRESP_sFTP/Password%%</Password>
+        <UserName>%%CorrespBan/CORRESP_sFTP/Usuario%%</UserName>
+        <PrivKeyPass>%%CorrespBan/CONCILIA_sFTP/Password%%</PrivKeyPass>
+        <PrivKey>/keys/id_rsa</PrivKey>
+    </config>
+</BWSharedResource>

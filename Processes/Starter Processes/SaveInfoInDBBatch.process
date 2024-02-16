@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns13="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns12="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <pd:name>Processes/SaveInfoInDBBatch (1).process</pd:name>
-    <pd:startName>Start</pd:startName>
-    <pd:startX>28</pd:startX>
-    <pd:startY>89</pd:startY>
+    <pd:name>Processes/Starter Processes/SaveInfoInDBBatch.process</pd:name>
+    <pd:startName>Timer</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
     <pd:returnBindings/>
+    <pd:starter name="Timer">
+        <pd:type>com.tibco.plugin.timer.TimerEventSource</pd:type>
+        <pd:resourceType>ae.activities.timer</pd:resourceType>
+        <pd:x>27</pd:x>
+        <pd:y>90</pd:y>
+        <config>
+            <StartTime>1707769496000</StartTime>
+            <Frequency>false</Frequency>
+            <TimeInterval>%%ProjConfig/interval%%</TimeInterval>
+            <FrequencyIndex>Millisecond</FrequencyIndex>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
     <pd:endName>End</pd:endName>
-    <pd:endX>1227</pd:endX>
-    <pd:endY>123</pd:endY>
+    <pd:endX>1354</pd:endX>
+    <pd:endY>127</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables>
         <Variable0>
@@ -24,7 +37,7 @@
     <pd:activity name="List Files">
         <pd:type>com.tibco.plugin.file.ListFilesActivity</pd:type>
         <pd:resourceType>ae.activities.ListFilesActivity</pd:resourceType>
-        <pd:x>143</pd:x>
+        <pd:x>146</pd:x>
         <pd:y>89</pd:y>
         <config>
             <mode>only-files</mode>
@@ -166,8 +179,8 @@
         <pd:activity name="Copy File">
             <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
             <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
-            <pd:x>979</pd:x>
-            <pd:y>142</pd:y>
+            <pd:x>939</pd:x>
+            <pd:y>115</pd:y>
             <config>
                 <createMissingDirectories>true</createMissingDirectories>
             </config>
@@ -177,7 +190,7 @@
                         <xsl:value-of select="$file/fileInfo/fullName"/>
                     </fromFileName>
                     <toFileName>
-                        <xsl:value-of select="concat('C:\u01\output_final\', $file/fileInfo/fileName)"/>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/ProjConfig/outputDirFinal, $file/fileInfo/fileName)"/>
                     </toFileName>
                 </ns2:CopyActivityConfig>
             </pd:inputBindings>
@@ -199,14 +212,14 @@
         <pd:activity name="JDBC Update">
             <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
             <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
-            <pd:x>796</pd:x>
-            <pd:y>108</pd:y>
+            <pd:x>798</pd:x>
+            <pd:y>109</pd:y>
             <config>
                 <timeout>350</timeout>
                 <commit>false</commit>
                 <emptyStrAsNil>false</emptyStrAsNil>
                 <jdbcSharedConfig>/Shared Resources/JDBC Connection.sharedjdbc</jdbcSharedConfig>
-                <statement>insert into  MT940_BBVA_2_ACS_2 (ID_EJECUCION,
+                <statement>insert into  SZTB940 (ID_EJECUCION,
 NOMBRE_ARCHIVO,
 TIPO_TRANSACCION,
 C86_REFERENCIA_ALUMNO,
@@ -225,8 +238,10 @@ C61_MONEDA,
 C60F_SALDO_INICIAL,
 C62F_SALDO_CIERRE,
 C61_COMPLETO,
-C86_COMPLETO)
-values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+C86_COMPLETO,
+COD_BANCO,
+COD_CAMPUS)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
                 <batchUpdate>true</batchUpdate>
                 <Prepared_Param_DataType>
                     <parameter>
@@ -307,6 +322,14 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
                     </parameter>
                     <parameter>
                         <parameterName>p_C86_COMPLETO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_COD_BANCO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_COD_CAMPUS</parameterName>
                         <dataType>VARCHAR</dataType>
                     </parameter>
                 </Prepared_Param_DataType>
@@ -466,36 +489,37 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
                                     </xsl:otherwise>
                                 </xsl:choose>
                             </p_C86_COMPLETO>
+                            <p_COD_BANCO>
+                                <xsl:value-of select="$_globalVariables/ns:GlobalVariables/ProjConfig/bankCve"/>
+                            </p_COD_BANCO>
+                            <xsl:choose>
+                                <xsl:when test="c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UNITEC">
+                                    <p_COD_CAMPUS>
+                                        <xsl:value-of select="substring(c86_referencia_alumno, 1,3)"/>
+                                    </p_COD_CAMPUS>
+                                </xsl:when>
+                                <xsl:when test="c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UVM">
+                                    <p_COD_CAMPUS>
+                                        <xsl:value-of select="substring(c86_referencia_alumno, 15,3)"/>
+                                    </p_COD_CAMPUS>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <p_COD_CAMPUS>
+                                        <xsl:value-of select="''"/>
+                                    </p_COD_CAMPUS>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </Record>
                     </xsl:for-each>
                 </jdbcUpdateActivityInput>
             </pd:inputBindings>
         </pd:activity>
     </pd:group>
-    <pd:activity name="Clean Table">
-        <pd:type>com.tibco.plugin.jdbc.JDBCGeneralActivity</pd:type>
-        <pd:resourceType>ae.activities.JDBCGeneralActivity</pd:resourceType>
-        <pd:x>247</pd:x>
-        <pd:y>208</pd:y>
-        <config>
-            <timeout>10</timeout>
-            <commit>false</commit>
-            <maxRows>100</maxRows>
-            <jdbcSharedConfig>/Shared Resources/JDBC Connection.sharedjdbc</jdbcSharedConfig>
-        </config>
-        <pd:inputBindings>
-            <jdbcGeneralActivityInput>
-                <statement>
-                    <xsl:value-of select="'truncate table MT940_BBVA_2_ACS '"/>
-                </statement>
-            </jdbcGeneralActivityInput>
-        </pd:inputBindings>
-    </pd:activity>
     <pd:activity name="Catch-1">
         <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
         <pd:resourceType>ae.activities.catch</pd:resourceType>
         <pd:x>261</pd:x>
-        <pd:y>365</pd:y>
+        <pd:y>425</pd:y>
         <pd:handler>true</pd:handler>
         <config>
             <catchAll>true</catchAll>
@@ -505,8 +529,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     <pd:activity name="Log Process Error">
         <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
         <pd:resourceType>ae.activities.log</pd:resourceType>
-        <pd:x>396</pd:x>
-        <pd:y>387</pd:y>
+        <pd:x>398</pd:x>
+        <pd:y>421</pd:y>
         <config>
             <role>User</role>
         </config>
@@ -524,8 +548,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     <pd:activity name="Generate Error">
         <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
         <pd:resourceType>ae.activities.throw</pd:resourceType>
-        <pd:x>583</pd:x>
-        <pd:y>359</pd:y>
+        <pd:x>574</pd:x>
+        <pd:y>421</pd:y>
         <config>
             <faultName/>
         </config>
@@ -540,8 +564,65 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
             </ns13:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
+    <pd:activity name="Log Start">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>260</pd:x>
+        <pd:y>88</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns12:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat('Start process SaveInfo in DB total files:' , count($List-Files/ns2:ListFilesActivityOutput/files/fileInfo))"/>
+                </message>
+                <msgCode>
+                    <xsl:value-of select="'A001'"/>
+                </msgCode>
+            </ns12:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Log Start 0Files">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>146</pd:x>
+        <pd:y>321</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns12:ActivityInput>
+                <message>
+                    <xsl:value-of select="'0 Files to processing.'"/>
+                </message>
+                <msgCode>
+                    <xsl:value-of select="'A02'"/>
+                </msgCode>
+            </ns12:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Log End">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>1228</pd:x>
+        <pd:y>127</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns12:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat('End process saveinfo in DB, from:', $i, '  files.')"/>
+                </message>
+                <msgCode>
+                    <xsl:value-of select="'A003'"/>
+                </msgCode>
+            </ns12:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
     <pd:transition>
-        <pd:from>Start</pd:from>
+        <pd:from>Timer</pd:from>
         <pd:to>List Files</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
@@ -549,24 +630,19 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     </pd:transition>
     <pd:transition>
         <pd:from>Group</pd:from>
-        <pd:to>End</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>Clean Table</pd:from>
-        <pd:to>Group</pd:to>
+        <pd:to>Log End</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
         <pd:from>List Files</pd:from>
-        <pd:to>Group</pd:to>
+        <pd:to>Log Start</pd:to>
+        <pd:xpathDescription>Files</pd:xpathDescription>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>count($List-Files/ns2:ListFilesActivityOutput/files/fileInfo)&gt;0</pd:xpath>
     </pd:transition>
     <pd:transition>
         <pd:from>Catch-1</pd:from>
@@ -578,6 +654,34 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     <pd:transition>
         <pd:from>Log Process Error</pd:from>
         <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log Start</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>List Files</pd:from>
+        <pd:to>Log Start 0Files</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log Start 0Files</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log End</pd:from>
+        <pd:to>End</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
