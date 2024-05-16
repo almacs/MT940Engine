@@ -31,19 +31,67 @@ Variables Globales para configurar:
 
 | Variable | Value | Descripcion|
 | ------ | ------ | ------ |
-|ProjConfig||
-| ErrorOut |"/u01/MT940/MT940Error/"|
-| bankClave | "012MT"|
-| bankCve | "012"|
-| copySFTP | "N"|
-| dateFormat | "yyyyMMdd"|
-| filePattern | "SALI*.txt"|
-| inputDir | "/u01/MT940/input/"|
-| interval | "300"|
-| outputDir | "/u01/MT940/output/"|
-| outputDirFinal | "/u01/MT940/outputFinal/" |
-| queueToStart | "laureate.mt940.start"|
-| withExpenses | "true"|
+|/CorrespBan|||
+|CLAVECONCILIA  |072|
+|CLAVECORRESP  |072|
+|DESCCONCILIA  |Correspnsales Conciliacion|
+|DESCCORRESP  |Correspnsales Banorte|
+|LocalErrorPath  |/u01/tibco/interfaces/315/bancos/072/error|
+|LocalFilePath  |/u01/tibco/interfaces/315/bancos/072|
+|LocalProcecedPath  |/u01/tibco/interfaces/315/bancos/072/procesado|
+|StatusError  |E|
+|StatusInProcess  |P|
+|StatusTerminated  |T|
+|/CorrespBan/CORRESP_sFTP
+|FilePattern  |SM418573ECR*.RES|
+|Password  |****|
+|Port  |22|
+|RemotePathFiles  |/recibido_banorte|
+|RemoteProcecedPath  |/ProcesadosTibco|
+|Timeout_milseg  |900000|
+|URL  |localhost|
+|Usuario  |sftpbanorte|
+|[/ProjConfig]
+|ErrorOut  |/u01/MT940/MT940Error/|
+|bankClave  |012MT|
+|bankCve  |012|
+|copySFTP  |N|
+|dateFormat  |yyyyMMdd|
+|filePattern  |SALI*.txt|
+|inputDir  |/u01/MT940/input/|
+|interval  |300|
+|outputDir  |/u01/MT940/output/|
+|outputDirFinal  |/u01/MT940/outputFinal/|
+|queueToStart  |laureate.mt940.start|
+|withExpenses  |true|
+|/ProjConfig/Accounts
+|UAVer  |0186124836|
+|UNITEC  |0178632383|
+|UVM  |0136732747|
+|/ProjConfig/C86Config||Posiciones para obtener los datos de C86
+|field1End  |3|
+|field1Start  |0|
+|field2End  |22|
+|field2Start  |2|
+|/ProjConfig/DBConnectionUNITEC
+|URL  |jdbc:tibcosoftwareinc:oracle://**********|
+|password  |****|
+|timeout  |350|
+|user  |SATURN|
+|/ProjConfig/DBConnectionUVM
+|URL  |jdbc:tibcosoftwareinc:oracle://**********|
+|pass  |****|
+|timeout  |350|
+|user  |SATURN|
+|/ProjConfig/Labels||Labels configurables para archivo simplificado
+|debitCreditMark  |C|
+|egreso  |EGRESO|
+|pagoAlumNoRef  |PAGO ALUMNO NO REF|
+|pagoAlumRef  |PAGO ALUMNO REF|
+|/ProjConfig/OutputDir
+|UAVer  |/u01/tibco/interfaces/002/bancos/|archivos simplificados para Ver hacia banner
+|UNITEC  |/u01/tibco/interfaces/315/bancos/|archivos simplificados para UNITEC hacia banner
+|UVM  |/u01/tibco/interfaces/001/bancos/||archivos simplificados para UVM hacia banner
 
 ## Development
 
