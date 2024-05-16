@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>URL</name>
+			<value>jdbc:tibcosoftwareinc:oracle://t10oradbdev03.uvmnet.edu:1521;ServiceName=t10devld_dev_phx</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1710199787440</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>pass</name>
+			<value>#!A1MWajVb4cyVvH+ks1trGlS0f2rsGVNGDY8pB2cUB6vrXUm8RtkDWw==</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Password</type>
+			<modTime>1710199840097</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>timeout</name>
+			<value>350</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1710199787430</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>user</name>
+			<value>SATURN</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1710199787418</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

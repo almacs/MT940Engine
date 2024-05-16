@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>UAVer</name>
+			<value>/u01/tibco/interfaces/002/bancos/</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1706062817313</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>UNITEC</name>
+			<value>/u01/tibco/interfaces/315/bancos/</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1706062817357</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>UVM</name>
+			<value>/u01/tibco/interfaces/001/bancos/</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1706062817338</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

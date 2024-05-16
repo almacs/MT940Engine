@@ -34,6 +34,7 @@
                         <xsd:element name="c62F_saldo_cierre" type="xsd:string" minOccurs="0"/>
                         <xsd:element name="c61_completo" type="xsd:string" minOccurs="0"/>
                         <xsd:element name="c86_completo" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="sequence" type="xsd:string"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>

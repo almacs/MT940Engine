@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>debitCreditMark</name>
+			<value>C</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1708359766808</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>egreso</name>
+			<value>EGRESO</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1708359766862</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>pagoAlumNoRef</name>
+			<value>PAGO ALUMNO NO REF</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1708359766896</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>pagoAlumRef</name>
+			<value>PAGO ALUMNO REF</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1708359766928</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>
