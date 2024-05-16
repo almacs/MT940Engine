@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/pe/DeployedVarsType" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <pd:name>Processes/Subprocesses/ValidateExistence.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="nombre_archivo" type="xsd:string"/>
+                    <xsd:element name="cuenta_bancaria" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>148</pd:startX>
+    <pd:startY>73</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <isDuplicated>
+                <xsl:value-of select="if(count($Exists-in-UNITEC/resultSet/Record)>0 or count($Exists-in-UVM/resultSet/Record)>0) &#xA;then true()&#xA;else false()"/>
+            </isDuplicated>
+            <xsl:if test="$GetCveBank-Banner-UVM/resultSet/Record[1]/ZSTPARA_PARAM_VALOR">
+                <cveBankUvm>
+                    <xsl:value-of select="$GetCveBank-Banner-UVM/resultSet/Record[1]/ZSTPARA_PARAM_VALOR"/>
+                </cveBankUvm>
+            </xsl:if>
+            <xsl:if test="$GetCveBank-Banner-UNITEC/resultSet/Record[1]/ZSTPARA_PARAM_VALOR">
+                <cveBankUnitec>
+                    <xsl:value-of select="$GetCveBank-Banner-UNITEC/resultSet/Record[1]/ZSTPARA_PARAM_VALOR"/>
+                </cveBankUnitec>
+            </xsl:if>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="isDuplicated" type="xsd:boolean"/>
+                    <xsd:element name="cveBankUvm" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="cveBankUnitec" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>697</pd:endX>
+    <pd:endY>75</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1713485772791</pd:targetNamespace>
+    <pd:activity name="Exists in UNITEC">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>355</pd:x>
+        <pd:y>195</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <maxRows>100</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/Shared Resources/JDBC Connection UNITEC.sharedjdbc</jdbcSharedConfig>
+            <statement> select distinct(1) from SZTB940 where nombre_archivo =?</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>p_nombre_archivo</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>_1</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>2</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>number</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <p_nombre_archivo>
+                    <xsl:value-of select="$Start/root/nombre_archivo"/>
+                </p_nombre_archivo>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Exists-in-UVM">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>347</pd:x>
+        <pd:y>72</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <maxRows>100</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/Shared Resources/JDBC Connection UVM.sharedjdbc</jdbcSharedConfig>
+            <statement> select distinct(1) from SZTB940 where nombre_archivo =?</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>p_nombre_archivo</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>_1</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>2</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>number</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <p_nombre_archivo>
+                    <xsl:value-of select="$Start/root/nombre_archivo"/>
+                </p_nombre_archivo>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetCveBank Banner UNITEC">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>509</pd:x>
+        <pd:y>201</pd:y>
+        <config>
+            <timeout>%%ProjConfig/DBConnectionUNITEC/timeout%%</timeout>
+            <commit>false</commit>
+            <maxRows>0</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/Shared Resources/JDBC Connection UNITEC.sharedjdbc</jdbcSharedConfig>
+            <statement> SELECT ZSTPARA_PARAM_ID
+                          ,ZSTPARA_PARAM_VALOR
+                          ,GXVBANK_ACCT_NAME
+                      FROM ZSTPARA
+                          ,GXVBANK
+                     WHERE ZSTPARA_MAPA_ID = 'TZACGCB'
+                       AND ZSTPARA_PARAM_ID = LPAD(?,3,'0')
+                       AND GXVBANK_BANK_CODE = ZSTPARA_PARAM_VALOR</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>p_cveBank</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>ZSTPARA_PARAM_ID</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>varchar2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>ZSTPARA_PARAM_VALOR</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>varchar2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>GXVBANK_ACCT_NAME</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>varchar2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <p_cveBank>
+                    <xsl:value-of select="$_globalVariables/pfx:GlobalVariables/ProjConfig/bankCve"/>
+                </p_cveBank>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetCveBank Banner UVM">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>507</pd:x>
+        <pd:y>80</pd:y>
+        <config>
+            <timeout>%%ProjConfig/DBConnectionUNITEC/timeout%%</timeout>
+            <commit>false</commit>
+            <maxRows>0</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/Shared Resources/JDBC Connection UVM.sharedjdbc</jdbcSharedConfig>
+            <statement> SELECT ZSTPARA_PARAM_ID
+                          ,ZSTPARA_PARAM_VALOR
+                          ,GXVBANK_ACCT_NAME
+                      FROM ZSTPARA
+                          ,GXVBANK
+                     WHERE ZSTPARA_MAPA_ID = 'TZACGCB'
+                       AND ZSTPARA_PARAM_ID = LPAD(?,3,'0')
+                       AND GXVBANK_BANK_CODE = ZSTPARA_PARAM_VALOR</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>p_cveBank</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>ZSTPARA_PARAM_ID</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>varchar2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>ZSTPARA_PARAM_VALOR</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>varchar2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>GXVBANK_ACCT_NAME</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>varchar2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <p_cveBank>
+                    <xsl:value-of select="$_globalVariables/pfx:GlobalVariables/ProjConfig/bankCve"/>
+                </p_cveBank>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Exists-in-UVM</pd:to>
+        <pd:xpathDescription>UVM</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Exists in UNITEC</pd:from>
+        <pd:to>GetCveBank Banner UNITEC</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Exists-in-UVM</pd:from>
+        <pd:to>GetCveBank Banner UVM</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Exists in UNITEC</pd:to>
+        <pd:xpathDescription>UNITEC</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/cuenta_bancaria=$_globalVariables/pfx:GlobalVariables/ProjConfig/Accounts/UNITEC</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetCveBank Banner UVM</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetCveBank Banner UNITEC</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

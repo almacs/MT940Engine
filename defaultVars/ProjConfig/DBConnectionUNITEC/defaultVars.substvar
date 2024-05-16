@@ -2,36 +2,37 @@
 <repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
 	<globalVariables>
 		<globalVariable>
-			<name>field1End</name>
-			<value>3</value>
+			<name>URL</name>
+			<value>jdbc:tibcosoftwareinc:oracle://t10oradbdev02.uvmnet.edu:1521;ServiceName=t10unb8d</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1708047700338</modTime>
+			<modTime>1710199840172</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>field1Start</name>
-			<value>0</value>
+			<name>password</name>
+			<value>#!dxnQllHnOxRBANUEGA8K3dismSjJh+EV6hF5tRiy69g=</value>
+			<description></description>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
-			<type>String</type>
-			<modTime>1708047700262</modTime>
+			<type>Password</type>
+			<modTime>1710199840132</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>field2End</name>
-			<value>22</value>
+			<name>timeout</name>
+			<value>350</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1708539961246</modTime>
+			<modTime>1710199840153</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>field2Start</name>
-			<value>2</value>
+			<name>user</name>
+			<value>SATURN</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1708539961290</modTime>
+			<modTime>1710199840116</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

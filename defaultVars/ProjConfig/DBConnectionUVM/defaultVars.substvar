@@ -3,20 +3,27 @@
 	<globalVariables>
 		<globalVariable>
 			<name>URL</name>
-			<value>jdbc:tibcosoftwareinc:sqlserver://localhost;databaseName=Laureate</value>
+			<value>jdbc:tibcosoftwareinc:oracle://t10oradbdev03.uvmnet.edu:1521;ServiceName=t10devld_dev_phx</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1702995890965</modTime>
+			<modTime>1710199787440</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>password</name>
-			<value>#!GmytyxR9lHGUnoFQavEUaKq2NMcTS8LITcq7i+taliQ=</value>
-			<description></description>
+			<name>pass</name>
+			<value>#!A1MWajVb4cyVvH+ks1trGlS0f2rsGVNGDY8pB2cUB6vrXUm8RtkDWw==</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>Password</type>
-			<modTime>1706063956756</modTime>
+			<modTime>1710199840097</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>timeout</name>
+			<value>350</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1710199787430</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>user</name>
@@ -24,7 +31,7 @@
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1703039786696</modTime>
+			<modTime>1710199787418</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

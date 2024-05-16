@@ -9,7 +9,7 @@
         <pd:type>com.tibco.plugin.timer.TimerEventSource</pd:type>
         <pd:resourceType>ae.activities.timer</pd:resourceType>
         <pd:x>27</pd:x>
-        <pd:y>90</pd:y>
+        <pd:y>223</pd:y>
         <config>
             <StartTime>1707769496000</StartTime>
             <Frequency>false</Frequency>
@@ -19,8 +19,8 @@
         <pd:inputBindings/>
     </pd:starter>
     <pd:endName>End</pd:endName>
-    <pd:endX>1354</pd:endX>
-    <pd:endY>127</pd:endY>
+    <pd:endX>1500</pd:endX>
+    <pd:endY>118</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables>
         <Variable0>
@@ -38,14 +38,14 @@
         <pd:type>com.tibco.plugin.file.ListFilesActivity</pd:type>
         <pd:resourceType>ae.activities.ListFilesActivity</pd:resourceType>
         <pd:x>146</pd:x>
-        <pd:y>89</pd:y>
+        <pd:y>222</pd:y>
         <config>
             <mode>only-files</mode>
         </config>
         <pd:inputBindings>
             <ns2:ListFilesActivityConfig>
                 <fileName>
-                    <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/ProjConfig/outputDir, '*.txt')"/>
+                    <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/ProjConfig/outputDir, $_globalVariables/ns:GlobalVariables/ProjConfig/filePattern)"/>
                 </fileName>
             </ns2:ListFilesActivityConfig>
         </pd:inputBindings>
@@ -53,10 +53,10 @@
     <pd:group name="Group">
         <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
         <pd:resourceType>ae.process.group</pd:resourceType>
-        <pd:x>351</pd:x>
-        <pd:y>2</pd:y>
+        <pd:x>428</pd:x>
+        <pd:y>6</pd:y>
         <pd:width>786</pd:width>
-        <pd:height>252</pd:height>
+        <pd:height>460</pd:height>
         <pd:collapsedWidth>57</pd:collapsedWidth>
         <pd:collapsedHeight>70</pd:collapsedHeight>
         <pd:groupVariables/>
@@ -80,6 +80,20 @@
             <pd:conditionType>always</pd:conditionType>
         </pd:transition>
         <pd:transition>
+            <pd:from>Remove-File-1</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Remove duplicated file</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
             <pd:from>Remove File</pd:from>
             <pd:to>end</pd:to>
             <pd:lineType>Default</pd:lineType>
@@ -95,7 +109,7 @@
         </pd:transition>
         <pd:transition>
             <pd:from>Parse Data</pd:from>
-            <pd:to>Assign</pd:to>
+            <pd:to>IsDuplicated</pd:to>
             <pd:lineType>Default</pd:lineType>
             <pd:lineColor>-16777216</pd:lineColor>
             <pd:conditionType>always</pd:conditionType>
@@ -109,14 +123,83 @@
         </pd:transition>
         <pd:transition>
             <pd:from>Assign</pd:from>
-            <pd:to>JDBC Update</pd:to>
+            <pd:to>InsertUnitec</pd:to>
+            <pd:xpathDescription>UNITEC</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>$Parse-Data/Output/Rows/root[1]/c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UNITEC</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>InsertUnitec</pd:from>
+            <pd:to>Copy File</pd:to>
             <pd:lineType>Default</pd:lineType>
             <pd:lineColor>-16777216</pd:lineColor>
             <pd:conditionType>always</pd:conditionType>
         </pd:transition>
         <pd:transition>
-            <pd:from>JDBC Update</pd:from>
+            <pd:from>Catch</pd:from>
+            <pd:to>Log error File</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Log error File</pd:from>
+            <pd:to>Copy-File-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Copy-File-1</pd:from>
+            <pd:to>Remove-File-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>InsertUVM</pd:from>
             <pd:to>Copy File</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Assign</pd:from>
+            <pd:to>InsertUVM</pd:to>
+            <pd:xpathDescription>UVM</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>IsDuplicated</pd:from>
+            <pd:to>Assign</pd:to>
+            <pd:xpathDescription>No</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>$IsDuplicated/root/isDuplicated="false"</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>IsDuplicated</pd:from>
+            <pd:to>Log-error Archivo Duplicado</pd:to>
+            <pd:xpathDescription>Yes</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-3407821</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Log-error Archivo Duplicado</pd:from>
+            <pd:to>Copy duplicated file</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Copy duplicated file</pd:from>
+            <pd:to>Remove duplicated file</pd:to>
             <pd:lineType>Default</pd:lineType>
             <pd:lineColor>-16777216</pd:lineColor>
             <pd:conditionType>always</pd:conditionType>
@@ -124,8 +207,8 @@
         <pd:activity name="Read File">
             <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
             <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
-            <pd:x>434</pd:x>
-            <pd:y>97</pd:y>
+            <pd:x>469</pd:x>
+            <pd:y>69</pd:y>
             <config>
                 <encoding>text</encoding>
             </config>
@@ -140,8 +223,8 @@
         <pd:activity name="Parse Data">
             <pd:type>com.tibco.plugin.parse.ParseActivity</pd:type>
             <pd:resourceType>ae.activities.ParseActivity</pd:resourceType>
-            <pd:x>525</pd:x>
-            <pd:y>86</pd:y>
+            <pd:x>560</pd:x>
+            <pd:y>66</pd:y>
             <config>
                 <InputType>String</InputType>
                 <Encoding>ASCII</Encoding>
@@ -163,8 +246,8 @@
         <pd:activity name="Assign">
             <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
             <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
-            <pd:x>641</pd:x>
-            <pd:y>89</pd:y>
+            <pd:x>783</pd:x>
+            <pd:y>68</pd:y>
             <config>
                 <variableName>Variable0</variableName>
             </config>
@@ -179,10 +262,11 @@
         <pd:activity name="Copy File">
             <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
             <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
-            <pd:x>939</pd:x>
-            <pd:y>115</pd:y>
+            <pd:x>1033</pd:x>
+            <pd:y>70</pd:y>
             <config>
                 <createMissingDirectories>true</createMissingDirectories>
+                <overwrite>true</overwrite>
             </config>
             <pd:inputBindings>
                 <ns2:CopyActivityConfig>
@@ -198,8 +282,8 @@
         <pd:activity name="Remove File">
             <pd:type>com.tibco.plugin.file.FileRemoveActivity</pd:type>
             <pd:resourceType>ae.activities.FileRemoveActivity</pd:resourceType>
-            <pd:x>1064</pd:x>
-            <pd:y>79</pd:y>
+            <pd:x>1131</pd:x>
+            <pd:y>72</pd:y>
             <config/>
             <pd:inputBindings>
                 <ns2:RemoveActivityInputClass>
@@ -209,39 +293,41 @@
                 </ns2:RemoveActivityInputClass>
             </pd:inputBindings>
         </pd:activity>
-        <pd:activity name="JDBC Update">
+        <pd:activity name="InsertUnitec">
             <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
             <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
-            <pd:x>798</pd:x>
-            <pd:y>109</pd:y>
+            <pd:x>912</pd:x>
+            <pd:y>180</pd:y>
             <config>
-                <timeout>350</timeout>
+                <timeout>%%ProjConfig/DBConnectionUNITEC/timeout%%</timeout>
                 <commit>false</commit>
                 <emptyStrAsNil>false</emptyStrAsNil>
-                <jdbcSharedConfig>/Shared Resources/JDBC Connection.sharedjdbc</jdbcSharedConfig>
-                <statement>insert into  SZTB940 (ID_EJECUCION,
-NOMBRE_ARCHIVO,
-TIPO_TRANSACCION,
-C86_REFERENCIA_ALUMNO,
-C61_FECHA_PAGO,
-C61_FECHA_POSTEO,
-C61_MONTO,
-C61_NUM_APROBACION,
-C20_REFERENCIA_TRANS,
-C21_NOMBRE_PROPIETARIO,
-C25_CUENTA_BANCARIA,
-C28_NUM_EDO_CUENTA,
-C61_COD_LEYENDA,
-C86_TIPO_DEPOSITO,
-C61_TIPO_MOV,
-C61_MONEDA,
-C60F_SALDO_INICIAL,
-C62F_SALDO_CIERRE,
-C61_COMPLETO,
-C86_COMPLETO,
-COD_BANCO,
-COD_CAMPUS)
-values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+                <jdbcSharedConfig>/Shared Resources/JDBC Connection UNITEC.sharedjdbc</jdbcSharedConfig>
+                <statement>insert into  SZTB940 (ID_EJECUCION	,
+NOMBRE_ARCHIVO	,
+TIPO_TRANSACCION	,
+C86_REFERENCIA_ALUMNO	,
+C61_FECHA_PAGO	,
+C61_FECHA_POSTEO	,
+C61_MONTO	,
+C61_NUM_APROBACION	,
+C20_REFERENCIA_TRANS	,
+C21_NOMBRE_PROPIETARIO	,
+C25_CUENTA_BANCARIA	,
+C28_NUM_EDO_CUENTA	,
+C61_COD_LEYENDA	,
+C86_TIPO_DEPOSITO	,
+C61_TIPO_MOV	,
+C61_MONEDA	,
+C60F_SALDO_INICIAL	,
+C62F_SALDO_CIERRE	,
+C61_COMPLETO	,
+C86_COMPLETO	,
+COD_BANCO	,
+COD_CAMPUS	, 
+ID_ALUMNO	,
+HASH_ID	)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
                 <batchUpdate>true</batchUpdate>
                 <Prepared_Param_DataType>
                     <parameter>
@@ -332,6 +418,14 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
                         <parameterName>p_COD_CAMPUS</parameterName>
                         <dataType>VARCHAR</dataType>
                     </parameter>
+                    <parameter>
+                        <parameterName>p_id_alumn</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_sequence</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
                 </Prepared_Param_DataType>
             </config>
             <pd:inputBindings>
@@ -362,7 +456,7 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
                                 </xsl:choose>
                             </p_TIPO_TRANSACCION>
                             <p_C86_REFERENCIA_ALUMNO>
-                                <xsl:value-of select="substring(c86_referencia_alumno, 1,20)"/>
+                                <xsl:value-of select="if (not(number(substring(c86_referencia_alumno, 1,20))) =false())&#xA;then substring(c86_referencia_alumno, 1,20)&#xA;else ''"/>
                             </p_C86_REFERENCIA_ALUMNO>
                             <p_C61_FECHA_PAGO>
                                 <xsl:choose>
@@ -490,17 +584,24 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
                                 </xsl:choose>
                             </p_C86_COMPLETO>
                             <p_COD_BANCO>
-                                <xsl:value-of select="$_globalVariables/ns:GlobalVariables/ProjConfig/bankCve"/>
+                                <xsl:choose>
+                                    <xsl:when test="exists($IsDuplicated/root/cveBankUnitec)">
+                                        <xsl:value-of select="$IsDuplicated/root/cveBankUnitec"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
                             </p_COD_BANCO>
                             <xsl:choose>
-                                <xsl:when test="c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UNITEC">
+                                <xsl:when test="c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UNITEC&#xA;and&#xA;tipo_transaccion!=$_globalVariables/ns:GlobalVariables/ProjConfig/Labels/egreso">
                                     <p_COD_CAMPUS>
                                         <xsl:value-of select="substring(c86_referencia_alumno, 1,3)"/>
                                     </p_COD_CAMPUS>
                                 </xsl:when>
-                                <xsl:when test="c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UVM">
+                                <xsl:when test="c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UVM&#xA;and&#xA;tipo_transaccion!=$_globalVariables/ns:GlobalVariables/ProjConfig/Labels/egreso">
                                     <p_COD_CAMPUS>
-                                        <xsl:value-of select="substring(c86_referencia_alumno, 15,3)"/>
+                                        <xsl:value-of select="substring(c86_referencia_alumno, 13,3)"/>
                                     </p_COD_CAMPUS>
                                 </xsl:when>
                                 <xsl:otherwise>
@@ -509,17 +610,487 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
                                     </p_COD_CAMPUS>
                                 </xsl:otherwise>
                             </xsl:choose>
+                            <p_id_alumn>
+                                <xsl:value-of select="if (not(number(substring(c86_referencia_alumno, 10,9))) =false())&#xA;then substring(c86_referencia_alumno, 10,9)&#xA;else ''"/>
+                            </p_id_alumn>
+                            <p_sequence>
+                                <xsl:value-of select="sequence"/>
+                            </p_sequence>
                         </Record>
                     </xsl:for-each>
                 </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Catch">
+            <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+            <pd:resourceType>ae.activities.catch</pd:resourceType>
+            <pd:x>793</pd:x>
+            <pd:y>271</pd:y>
+            <pd:handler>true</pd:handler>
+            <config>
+                <catchAll>true</catchAll>
+            </config>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="Log error File">
+            <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+            <pd:resourceType>ae.activities.log</pd:resourceType>
+            <pd:x>896</pd:x>
+            <pd:y>272</pd:y>
+            <config>
+                <role>User</role>
+            </config>
+            <pd:inputBindings>
+                <ns12:ActivityInput>
+                    <message>
+                        <xsl:value-of select="concat('Error on Fiel while saveinfo in DB, file: ', $file/fileInfo/fullName, '  .'&#xA;, tib:render-xml($Catch/exceptiondata))"/>
+                    </message>
+                    <msgCode>
+                        <xsl:value-of select="'A003'"/>
+                    </msgCode>
+                </ns12:ActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Copy-File-1">
+            <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
+            <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
+            <pd:x>983</pd:x>
+            <pd:y>270</pd:y>
+            <config>
+                <createMissingDirectories>true</createMissingDirectories>
+                <overwrite>true</overwrite>
+            </config>
+            <pd:inputBindings>
+                <ns2:CopyActivityConfig>
+                    <fromFileName>
+                        <xsl:value-of select="$file/fileInfo/fullName"/>
+                    </fromFileName>
+                    <toFileName>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/ProjConfig/ErrorOut, $file/fileInfo/fileName)"/>
+                    </toFileName>
+                </ns2:CopyActivityConfig>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Remove-File-1">
+            <pd:type>com.tibco.plugin.file.FileRemoveActivity</pd:type>
+            <pd:resourceType>ae.activities.FileRemoveActivity</pd:resourceType>
+            <pd:x>1088</pd:x>
+            <pd:y>270</pd:y>
+            <config/>
+            <pd:inputBindings>
+                <ns2:RemoveActivityInputClass>
+                    <fileName>
+                        <xsl:value-of select="$file/fileInfo/fullName"/>
+                    </fileName>
+                </ns2:RemoveActivityInputClass>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="InsertUVM">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>908</pd:x>
+            <pd:y>68</pd:y>
+            <config>
+                <timeout>%%ProjConfig/DBConnectionUVM/timeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/Shared Resources/JDBC Connection UVM.sharedjdbc</jdbcSharedConfig>
+                <statement>insert into  SZTB940 (ID_EJECUCION	,
+NOMBRE_ARCHIVO	,
+TIPO_TRANSACCION	,
+C86_REFERENCIA_ALUMNO	,
+C61_FECHA_PAGO	,
+C61_FECHA_POSTEO	,
+C61_MONTO	,
+C61_NUM_APROBACION	,
+C20_REFERENCIA_TRANS	,
+C21_NOMBRE_PROPIETARIO	,
+C25_CUENTA_BANCARIA	,
+C28_NUM_EDO_CUENTA	,
+C61_COD_LEYENDA	,
+C86_TIPO_DEPOSITO	,
+C61_TIPO_MOV	,
+C61_MONEDA	,
+C60F_SALDO_INICIAL	,
+C62F_SALDO_CIERRE	,
+C61_COMPLETO	,
+C86_COMPLETO	,
+COD_BANCO	,
+COD_CAMPUS	, 
+ID_ALUMNO	,
+HASH_ID	)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+                <batchUpdate>true</batchUpdate>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>p_ID_EJECUCION</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_NOMBRE_ARCHIVO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_TIPO_TRANSACCION</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C86_REFERENCIA_ALUMNO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C61_FECHA_PAGO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C61_FECHA_POSTEO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C61_MONTO</parameterName>
+                        <dataType>NUMERIC</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C61_NUM_APROBACION</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C20_REFERENCIA_TRANS</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C21_NOMBRE_PROPIETARIO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C25_CUENTA_BANCARIA</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C28_NUM_EDO_CUENTA</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C61_COD_LEYENDA</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C86_TIPO_DEPOSITO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C61_TIPO_MOV</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C61_MONEDA</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C60F_SALDO_INICIAL</parameterName>
+                        <dataType>NUMERIC</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C62F_SALDO_CIERRE</parameterName>
+                        <dataType>NUMERIC</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C61_COMPLETO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_C86_COMPLETO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_COD_BANCO</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_COD_CAMPUS</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_id_alumn</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>p_sequence</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <xsl:for-each xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="$Parse-Data/Output/Rows/root">
+                        <Record>
+                            <p_ID_EJECUCION>
+                                <xsl:value-of select="id_ejecucion"/>
+                            </p_ID_EJECUCION>
+                            <p_NOMBRE_ARCHIVO>
+                                <xsl:choose>
+                                    <xsl:when test="exists(nombre_archivo)">
+                                        <xsl:value-of select="nombre_archivo"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_NOMBRE_ARCHIVO>
+                            <p_TIPO_TRANSACCION>
+                                <xsl:choose>
+                                    <xsl:when test="exists(tipo_transaccion)">
+                                        <xsl:value-of select="tipo_transaccion"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_TIPO_TRANSACCION>
+                            <p_C86_REFERENCIA_ALUMNO>
+                                <xsl:value-of select="if (not(number(substring(c86_referencia_alumno, 1,20))) =false())&#xA;then substring(c86_referencia_alumno, 1,20)&#xA;else ''"/>
+                            </p_C86_REFERENCIA_ALUMNO>
+                            <p_C61_FECHA_PAGO>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c61_fecha_pago)">
+                                        <xsl:value-of select="c61_fecha_pago"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C61_FECHA_PAGO>
+                            <p_C61_FECHA_POSTEO>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c61_fecha_posteo)">
+                                        <xsl:value-of select="c61_fecha_posteo"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C61_FECHA_POSTEO>
+                            <p_C61_MONTO>
+                                <xsl:value-of select="c61_monto"/>
+                            </p_C61_MONTO>
+                            <p_C61_NUM_APROBACION>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c61_num_aprobacion)">
+                                        <xsl:value-of select="c61_num_aprobacion"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C61_NUM_APROBACION>
+                            <p_C20_REFERENCIA_TRANS>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c20_referencia_trans)">
+                                        <xsl:value-of select="c20_referencia_trans"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C20_REFERENCIA_TRANS>
+                            <p_C21_NOMBRE_PROPIETARIO>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c21_nombre_propietario)">
+                                        <xsl:value-of select="c21_nombre_propietario"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C21_NOMBRE_PROPIETARIO>
+                            <p_C25_CUENTA_BANCARIA>
+                                <xsl:value-of select="c25_cuenta_bancaria"/>
+                            </p_C25_CUENTA_BANCARIA>
+                            <p_C28_NUM_EDO_CUENTA>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c28_num_edo_cuenta)">
+                                        <xsl:value-of select="c28_num_edo_cuenta"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C28_NUM_EDO_CUENTA>
+                            <p_C61_COD_LEYENDA>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c61_cod_leyenda)">
+                                        <xsl:value-of select="c61_cod_leyenda"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C61_COD_LEYENDA>
+                            <p_C86_TIPO_DEPOSITO>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c86_tipo_deposito)">
+                                        <xsl:value-of select="c86_tipo_deposito"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C86_TIPO_DEPOSITO>
+                            <p_C61_TIPO_MOV>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c61_tipo_mov)">
+                                        <xsl:value-of select="c61_tipo_mov"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C61_TIPO_MOV>
+                            <p_C61_MONEDA>
+                                <xsl:value-of select="c61_moneda"/>
+                            </p_C61_MONEDA>
+                            <p_C60F_SALDO_INICIAL>
+                                <xsl:value-of select="c60F_saldo_inicial"/>
+                            </p_C60F_SALDO_INICIAL>
+                            <p_C62F_SALDO_CIERRE>
+                                <xsl:value-of select="c62F_saldo_cierre"/>
+                            </p_C62F_SALDO_CIERRE>
+                            <p_C61_COMPLETO>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c61_completo)">
+                                        <xsl:value-of select="c61_completo"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C61_COMPLETO>
+                            <p_C86_COMPLETO>
+                                <xsl:choose>
+                                    <xsl:when test="exists(c86_completo)">
+                                        <xsl:value-of select="c86_completo"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_C86_COMPLETO>
+                            <p_COD_BANCO>
+                                <xsl:choose>
+                                    <xsl:when test="exists($IsDuplicated/root/cveBankUvm)">
+                                        <xsl:value-of select="$IsDuplicated/root/cveBankUvm"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </p_COD_BANCO>
+                            <xsl:choose>
+                                <xsl:when test="c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UNITEC&#xA;and&#xA;tipo_transaccion!=$_globalVariables/ns:GlobalVariables/ProjConfig/Labels/egreso">
+                                    <p_COD_CAMPUS>
+                                        <xsl:value-of select="substring(c86_referencia_alumno, 1,3)"/>
+                                    </p_COD_CAMPUS>
+                                </xsl:when>
+                                <xsl:when test="c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UVM&#xA;and&#xA;tipo_transaccion!=$_globalVariables/ns:GlobalVariables/ProjConfig/Labels/egreso">
+                                    <p_COD_CAMPUS>
+                                        <xsl:value-of select="substring(c86_referencia_alumno, 13,3)"/>
+                                    </p_COD_CAMPUS>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <p_COD_CAMPUS>
+                                        <xsl:value-of select="''"/>
+                                    </p_COD_CAMPUS>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            <p_id_alumn>
+                                <xsl:value-of select="if (not(number(substring(c86_referencia_alumno, 1,12))) =false())&#xA;then string(number(substring(c86_referencia_alumno, 1,12)))&#xA;else ''"/>
+                            </p_id_alumn>
+                            <p_sequence>
+                                <xsl:value-of select="sequence"/>
+                            </p_sequence>
+                        </Record>
+                    </xsl:for-each>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="IsDuplicated">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>674</pd:x>
+            <pd:y>70</pd:y>
+            <config>
+                <processName>/Processes/Subprocesses/ValidateExistence.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <nombre_archivo>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/nombre_archivo"/>
+                    </nombre_archivo>
+                    <cuenta_bancaria>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/c25_cuenta_bancaria"/>
+                    </cuenta_bancaria>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Log-error Archivo Duplicado">
+            <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+            <pd:resourceType>ae.activities.log</pd:resourceType>
+            <pd:x>676</pd:x>
+            <pd:y>375</pd:y>
+            <config>
+                <role>User</role>
+            </config>
+            <pd:inputBindings>
+                <ns12:ActivityInput>
+                    <message>
+                        <xsl:value-of select="concat('Error duplicated file: ', $file/fileInfo/fullName, '  .' )"/>
+                    </message>
+                    <msgCode>
+                        <xsl:value-of select="'A003'"/>
+                    </msgCode>
+                </ns12:ActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Copy duplicated file">
+            <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
+            <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
+            <pd:x>883</pd:x>
+            <pd:y>378</pd:y>
+            <config>
+                <createMissingDirectories>true</createMissingDirectories>
+                <overwrite>true</overwrite>
+            </config>
+            <pd:inputBindings>
+                <ns2:CopyActivityConfig>
+                    <fromFileName>
+                        <xsl:value-of select="$file/fileInfo/fullName"/>
+                    </fromFileName>
+                    <toFileName>
+                        <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/ProjConfig/ErrorOut, $file/fileInfo/fileName)"/>
+                    </toFileName>
+                </ns2:CopyActivityConfig>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Remove duplicated file">
+            <pd:type>com.tibco.plugin.file.FileRemoveActivity</pd:type>
+            <pd:resourceType>ae.activities.FileRemoveActivity</pd:resourceType>
+            <pd:x>1104</pd:x>
+            <pd:y>379</pd:y>
+            <config/>
+            <pd:inputBindings>
+                <ns2:RemoveActivityInputClass>
+                    <fileName>
+                        <xsl:value-of select="$file/fileInfo/fullName"/>
+                    </fileName>
+                </ns2:RemoveActivityInputClass>
             </pd:inputBindings>
         </pd:activity>
     </pd:group>
     <pd:activity name="Catch-1">
         <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
         <pd:resourceType>ae.activities.catch</pd:resourceType>
-        <pd:x>261</pd:x>
-        <pd:y>425</pd:y>
+        <pd:x>272</pd:x>
+        <pd:y>593</pd:y>
         <pd:handler>true</pd:handler>
         <config>
             <catchAll>true</catchAll>
@@ -529,8 +1100,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     <pd:activity name="Log Process Error">
         <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
         <pd:resourceType>ae.activities.log</pd:resourceType>
-        <pd:x>398</pd:x>
-        <pd:y>421</pd:y>
+        <pd:x>416</pd:x>
+        <pd:y>594</pd:y>
         <config>
             <role>User</role>
         </config>
@@ -548,8 +1119,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     <pd:activity name="Generate Error">
         <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
         <pd:resourceType>ae.activities.throw</pd:resourceType>
-        <pd:x>574</pd:x>
-        <pd:y>421</pd:y>
+        <pd:x>576</pd:x>
+        <pd:y>594</pd:y>
         <config>
             <faultName/>
         </config>
@@ -568,7 +1139,7 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
         <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
         <pd:resourceType>ae.activities.log</pd:resourceType>
         <pd:x>260</pd:x>
-        <pd:y>88</pd:y>
+        <pd:y>221</pd:y>
         <config>
             <role>User</role>
         </config>
@@ -586,8 +1157,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     <pd:activity name="Log Start 0Files">
         <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
         <pd:resourceType>ae.activities.log</pd:resourceType>
-        <pd:x>146</pd:x>
-        <pd:y>321</pd:y>
+        <pd:x>148</pd:x>
+        <pd:y>500</pd:y>
         <config>
             <role>User</role>
         </config>
@@ -605,8 +1176,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     <pd:activity name="Log End">
         <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
         <pd:resourceType>ae.activities.log</pd:resourceType>
-        <pd:x>1228</pd:x>
-        <pd:y>127</pd:y>
+        <pd:x>1404</pd:x>
+        <pd:y>124</pd:y>
         <config>
             <role>User</role>
         </config>
@@ -659,13 +1230,6 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
-        <pd:from>Log Start</pd:from>
-        <pd:to>Group</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
         <pd:from>List Files</pd:from>
         <pd:to>Log Start 0Files</pd:to>
         <pd:lineType>Default</pd:lineType>
@@ -682,6 +1246,13 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
     <pd:transition>
         <pd:from>Log End</pd:from>
         <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log Start</pd:from>
+        <pd:to>Group</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>

@@ -11,11 +11,11 @@
 		</globalVariable>
 		<globalVariable>
 			<name>bankClave</name>
-			<value>012</value>
+			<value>012MT</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1706062326684</modTime>
+			<modTime>1708570951216</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>bankCve</name>
@@ -32,6 +32,22 @@
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
 			<modTime>1707784745721</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>dateFormat</name>
+			<value>yyyyMMdd</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1714427671366</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>filePattern</name>
+			<value>SALI*.txt</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1708359304775</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>inputDir</name>

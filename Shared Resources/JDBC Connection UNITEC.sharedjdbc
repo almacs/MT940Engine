@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BWSharedResource>
-    <name>JDBC Connection</name>
+    <name>JDBC Connection UNITEC</name>
     <resourceType>ae.shared.JDBCSharedResource</resourceType>
     <config>
         <driver>tibcosoftwareinc.jdbc.oracle.OracleDriver</driver>
@@ -8,8 +8,8 @@
         <loginTimeout>0</loginTimeout>
         <connectionType>JDBC</connectionType>
         <UseSharedJndiConfig>false</UseSharedJndiConfig>
-        <location>jdbc:tibcosoftwareinc:oracle://t10oradbdev02.uvmnet.edu:1521;ServiceName=t10unb8d</location>
-        <user>%%ProjConfig/DBConnection/user%%</user>
-        <password>%%ProjConfig/DBConnection/password%%</password>
+        <location>%%ProjConfig/DBConnectionUNITEC/URL%%</location>
+        <user>%%ProjConfig/DBConnectionUNITEC/user%%</user>
+        <password>%%ProjConfig/DBConnectionUNITEC/password%%</password>
     </config>
 </BWSharedResource>
