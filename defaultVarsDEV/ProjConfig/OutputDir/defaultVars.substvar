@@ -2,36 +2,28 @@
 <repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
 	<globalVariables>
 		<globalVariable>
-			<name>URL</name>
-			<value>jdbc:tibcosoftwareinc:oracle://t10oradbdev03.uvmnet.edu:1521;ServiceName=t10devld_dev_phx</value>
+			<name>UAVer</name>
+			<value>/u01/tibco/interfaces/002/bancos/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199787440</modTime>
+			<modTime>1706062817313</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>pass</name>
-			<value>#!ZPKpZylhJGdCFQTvUR9I2QCtKRctVvGTQDimFvwz+oLiDGZsdMCw0Q==</value>
-			<deploymentSettable>true</deploymentSettable>
-			<serviceSettable>false</serviceSettable>
-			<type>Password</type>
-			<modTime>1710199840097</modTime>
-		</globalVariable>
-		<globalVariable>
-			<name>timeout</name>
-			<value>350</value>
+			<name>UNITEC</name>
+			<value>/u01/tibco/interfaces/315/bancos/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199787430</modTime>
+			<modTime>1706062817357</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>user</name>
-			<value>SATURN</value>
+			<name>UVM</name>
+			<value>/u01/tibco/interfaces/001/bancos/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199787418</modTime>
+			<modTime>1706062817338</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

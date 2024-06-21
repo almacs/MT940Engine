@@ -3,15 +3,15 @@
 	<globalVariables>
 		<globalVariable>
 			<name>FilePattern</name>
-			<value>SM418573ECR*.RES</value>
+			<value>RC005385*</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1686014429631</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>Password</name>
-			<value>#!KhTI9tejMvGTdZIqo6Wtlg==</value>
+			<value>#!xrKdzCpUbyuLOYnXWixWLA==</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>Password</type>
@@ -47,7 +47,7 @@
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1669321627295</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>URL</name>
@@ -55,7 +55,7 @@
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1686014926637</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>Usuario</name>
@@ -63,7 +63,7 @@
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1669321627295</modTime>
+			<modTime>1669321627294</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

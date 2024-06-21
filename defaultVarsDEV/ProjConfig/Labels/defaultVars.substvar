@@ -2,36 +2,36 @@
 <repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
 	<globalVariables>
 		<globalVariable>
-			<name>URL</name>
-			<value>jdbc:tibcosoftwareinc:oracle://t10oradbdev03.uvmnet.edu:1521;ServiceName=t10devld_dev_phx</value>
+			<name>debitCreditMark</name>
+			<value>C</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199787440</modTime>
+			<modTime>1708359766808</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>pass</name>
-			<value>#!ZPKpZylhJGdCFQTvUR9I2QCtKRctVvGTQDimFvwz+oLiDGZsdMCw0Q==</value>
-			<deploymentSettable>true</deploymentSettable>
-			<serviceSettable>false</serviceSettable>
-			<type>Password</type>
-			<modTime>1710199840097</modTime>
-		</globalVariable>
-		<globalVariable>
-			<name>timeout</name>
-			<value>350</value>
+			<name>egreso</name>
+			<value>EGRESO</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199787430</modTime>
+			<modTime>1708359766862</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>user</name>
-			<value>SATURN</value>
+			<name>pagoAlumNoRef</name>
+			<value>PAGO ALUMNO NO REF</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199787418</modTime>
+			<modTime>1708359766896</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>pagoAlumRef</name>
+			<value>PAGO ALUMNO REF</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1708359766928</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

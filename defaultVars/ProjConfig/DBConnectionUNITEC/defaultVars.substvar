@@ -3,20 +3,20 @@
 	<globalVariables>
 		<globalVariable>
 			<name>URL</name>
-			<value>jdbc:tibcosoftwareinc:oracle://t10oradbdev02.uvmnet.edu:1521;ServiceName=t10unb8d</value>
+			<value>jdbc:tibcosoftwareinc:oracle://t10oradbdev04.uvmnet.edu:1521;ServiceName=t10ubnqc</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199840172</modTime>
+			<modTime>1716327303145</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>password</name>
-			<value>#!dxnQllHnOxRBANUEGA8K3dismSjJh+EV6hF5tRiy69g=</value>
+			<value>#!QRNtVNgTeHHXIhKqzaC/kjkKSq2pGwTAnpXc3rc36ppL400PVLHFDw==</value>
 			<description></description>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>Password</type>
-			<modTime>1710199840132</modTime>
+			<modTime>1716327303173</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>timeout</name>
@@ -28,11 +28,11 @@
 		</globalVariable>
 		<globalVariable>
 			<name>user</name>
-			<value>SATURN</value>
+			<value>TIBCO01</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199840116</modTime>
+			<modTime>1716327303200</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

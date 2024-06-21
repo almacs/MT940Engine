@@ -9,7 +9,7 @@
         <pd:type>com.tibco.plugin.timer.TimerEventSource</pd:type>
         <pd:resourceType>ae.activities.timer</pd:resourceType>
         <pd:x>27</pd:x>
-        <pd:y>223</pd:y>
+        <pd:y>220</pd:y>
         <config>
             <StartTime>1707769496000</StartTime>
             <Frequency>false</Frequency>
@@ -85,6 +85,14 @@
             <pd:lineType>Default</pd:lineType>
             <pd:lineColor>-16777216</pd:lineColor>
             <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Assign</pd:from>
+            <pd:to>end</pd:to>
+            <pd:xpathDescription>No processed and not errored</pd:xpathDescription>
+            <pd:lineType>Multiple Bends</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
         </pd:transition>
         <pd:transition>
             <pd:from>Remove duplicated file</pd:from>
@@ -171,7 +179,10 @@
             <pd:xpathDescription>UVM</pd:xpathDescription>
             <pd:lineType>Default</pd:lineType>
             <pd:lineColor>-16777216</pd:lineColor>
-            <pd:conditionType>otherwise</pd:conditionType>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>$Parse-Data/Output/Rows/root[1]/c25_cuenta_bancaria=$_globalVariables/ns:GlobalVariables/ProjConfig/Accounts/UVM
+and
+$_globalVariables/ns:GlobalVariables/ProjConfig/isOnUVM ='true'</pd:xpath>
         </pd:transition>
         <pd:transition>
             <pd:from>IsDuplicated</pd:from>
@@ -207,8 +218,8 @@
         <pd:activity name="Read File">
             <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
             <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
-            <pd:x>469</pd:x>
-            <pd:y>69</pd:y>
+            <pd:x>478</pd:x>
+            <pd:y>70</pd:y>
             <config>
                 <encoding>text</encoding>
             </config>
@@ -223,8 +234,8 @@
         <pd:activity name="Parse Data">
             <pd:type>com.tibco.plugin.parse.ParseActivity</pd:type>
             <pd:resourceType>ae.activities.ParseActivity</pd:resourceType>
-            <pd:x>560</pd:x>
-            <pd:y>66</pd:y>
+            <pd:x>567</pd:x>
+            <pd:y>72</pd:y>
             <config>
                 <InputType>String</InputType>
                 <Encoding>ASCII</Encoding>
@@ -246,8 +257,8 @@
         <pd:activity name="Assign">
             <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
             <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
-            <pd:x>783</pd:x>
-            <pd:y>68</pd:y>
+            <pd:x>774</pd:x>
+            <pd:y>244</pd:y>
             <config>
                 <variableName>Variable0</variableName>
             </config>
@@ -262,8 +273,8 @@
         <pd:activity name="Copy File">
             <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
             <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
-            <pd:x>1033</pd:x>
-            <pd:y>70</pd:y>
+            <pd:x>1013</pd:x>
+            <pd:y>74</pd:y>
             <config>
                 <createMissingDirectories>true</createMissingDirectories>
                 <overwrite>true</overwrite>
@@ -296,8 +307,8 @@
         <pd:activity name="InsertUnitec">
             <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
             <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
-            <pd:x>912</pd:x>
-            <pd:y>180</pd:y>
+            <pd:x>890</pd:x>
+            <pd:y>169</pd:y>
             <config>
                 <timeout>%%ProjConfig/DBConnectionUNITEC/timeout%%</timeout>
                 <commit>false</commit>
@@ -624,8 +635,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
         <pd:activity name="Catch">
             <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
             <pd:resourceType>ae.activities.catch</pd:resourceType>
-            <pd:x>793</pd:x>
-            <pd:y>271</pd:y>
+            <pd:x>811</pd:x>
+            <pd:y>312</pd:y>
             <pd:handler>true</pd:handler>
             <config>
                 <catchAll>true</catchAll>
@@ -635,8 +646,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
         <pd:activity name="Log error File">
             <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
             <pd:resourceType>ae.activities.log</pd:resourceType>
-            <pd:x>896</pd:x>
-            <pd:y>272</pd:y>
+            <pd:x>895</pd:x>
+            <pd:y>312</pd:y>
             <config>
                 <role>User</role>
             </config>
@@ -654,8 +665,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
         <pd:activity name="Copy-File-1">
             <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
             <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
-            <pd:x>983</pd:x>
-            <pd:y>270</pd:y>
+            <pd:x>990</pd:x>
+            <pd:y>312</pd:y>
             <config>
                 <createMissingDirectories>true</createMissingDirectories>
                 <overwrite>true</overwrite>
@@ -674,8 +685,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
         <pd:activity name="Remove-File-1">
             <pd:type>com.tibco.plugin.file.FileRemoveActivity</pd:type>
             <pd:resourceType>ae.activities.FileRemoveActivity</pd:resourceType>
-            <pd:x>1088</pd:x>
-            <pd:y>270</pd:y>
+            <pd:x>1074</pd:x>
+            <pd:y>311</pd:y>
             <config/>
             <pd:inputBindings>
                 <ns2:RemoveActivityInputClass>
@@ -688,8 +699,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
         <pd:activity name="InsertUVM">
             <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
             <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
-            <pd:x>908</pd:x>
-            <pd:y>68</pd:y>
+            <pd:x>879</pd:x>
+            <pd:y>72</pd:y>
             <config>
                 <timeout>%%ProjConfig/DBConnectionUVM/timeout%%</timeout>
                 <commit>false</commit>
@@ -1035,8 +1046,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
         <pd:activity name="Log-error Archivo Duplicado">
             <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
             <pd:resourceType>ae.activities.log</pd:resourceType>
-            <pd:x>676</pd:x>
-            <pd:y>375</pd:y>
+            <pd:x>680</pd:x>
+            <pd:y>398</pd:y>
             <config>
                 <role>User</role>
             </config>
@@ -1054,8 +1065,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
         <pd:activity name="Copy duplicated file">
             <pd:type>com.tibco.plugin.file.FileCopyActivity</pd:type>
             <pd:resourceType>ae.activities.FileCopyActivity</pd:resourceType>
-            <pd:x>883</pd:x>
-            <pd:y>378</pd:y>
+            <pd:x>882</pd:x>
+            <pd:y>401</pd:y>
             <config>
                 <createMissingDirectories>true</createMissingDirectories>
                 <overwrite>true</overwrite>
@@ -1075,7 +1086,7 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
             <pd:type>com.tibco.plugin.file.FileRemoveActivity</pd:type>
             <pd:resourceType>ae.activities.FileRemoveActivity</pd:resourceType>
             <pd:x>1104</pd:x>
-            <pd:y>379</pd:y>
+            <pd:y>394</pd:y>
             <config/>
             <pd:inputBindings>
                 <ns2:RemoveActivityInputClass>

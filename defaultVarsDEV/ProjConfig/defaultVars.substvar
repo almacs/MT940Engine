@@ -3,11 +3,11 @@
 	<globalVariables>
 		<globalVariable>
 			<name>ErrorOut</name>
-			<value>/u01/tibco/interfaces/MT940/Error/</value>
+			<value>/u01/MT940/MT940Error/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1716588978559</modTime>
+			<modTime>1706136239957</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>bankClave</name>
@@ -51,43 +51,43 @@
 		</globalVariable>
 		<globalVariable>
 			<name>inputDir</name>
-			<value>/u01/tibco/interfaces/MT940/input/</value>
+			<value>/u01/MT940/input/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1716589017360</modTime>
+			<modTime>1706136239981</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>interval</name>
-			<value>300000</value>
+			<value>300</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1716332313768</modTime>
+			<modTime>1707769587614</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>isOnUVM</name>
-			<value>false</value>
+			<value>true</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>Boolean</type>
-			<modTime>1716589548982</modTime>
+			<modTime>1718090160987</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>outputDir</name>
-			<value>/u01/tibco/interfaces/MT940/output/</value>
+			<value>/u01/MT940/output/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1716589017395</modTime>
+			<modTime>1706136239995</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>outputDirFinal</name>
-			<value>/u01/tibco/interfaces/MT940/outputFinal/</value>
+			<value>/u01/MT940/outputFinal/</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1716589017417</modTime>
+			<modTime>1707763269434</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>queueToStart</name>

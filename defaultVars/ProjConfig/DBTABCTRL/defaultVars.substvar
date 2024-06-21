@@ -2,20 +2,12 @@
 <repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
 	<globalVariables>
 		<globalVariable>
-			<name>URL</name>
-			<value>jdbc:tibcosoftwareinc:oracle://t10oradbdev03.uvmnet.edu:1521;ServiceName=t10devld_dev_phx</value>
-			<deploymentSettable>true</deploymentSettable>
-			<serviceSettable>false</serviceSettable>
-			<type>String</type>
-			<modTime>1710199787440</modTime>
-		</globalVariable>
-		<globalVariable>
 			<name>pass</name>
-			<value>#!ZPKpZylhJGdCFQTvUR9I2QCtKRctVvGTQDimFvwz+oLiDGZsdMCw0Q==</value>
+			<value>#!HKSuBA/CPO/+uw1slUZ64WydLsmwFUv6rwht7FK9hQo=</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>Password</type>
-			<modTime>1710199840097</modTime>
+			<modTime>1717799608487</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>timeout</name>
@@ -23,15 +15,23 @@
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199787430</modTime>
+			<modTime>1717799800873</modTime>
 		</globalVariable>
 		<globalVariable>
-			<name>user</name>
-			<value>SATURN</value>
+			<name>url</name>
+			<value>jdbc:tibcosoftwareinc:oracle://U47QATDB01.LAUREATE.MX:1521;SID=DVTIBNW</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1710199787418</modTime>
+			<modTime>1717799567966</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>user</name>
+			<value>SCHTBCTL</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1717799567995</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>

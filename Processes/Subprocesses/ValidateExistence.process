@@ -12,8 +12,8 @@
             </xsd:complexType>
         </xsd:element>
     </pd:startType>
-    <pd:startX>148</pd:startX>
-    <pd:startY>73</pd:startY>
+    <pd:startX>123</pd:startX>
+    <pd:startY>85</pd:startY>
     <pd:returnBindings>
         <root>
             <isDuplicated>
@@ -43,16 +43,16 @@
             </xsd:complexType>
         </xsd:element>
     </pd:endType>
-    <pd:endX>697</pd:endX>
-    <pd:endY>75</pd:endY>
+    <pd:endX>717</pd:endX>
+    <pd:endY>93</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1713485772791</pd:targetNamespace>
     <pd:activity name="Exists in UNITEC">
         <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
         <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
-        <pd:x>355</pd:x>
-        <pd:y>195</pd:y>
+        <pd:x>344</pd:x>
+        <pd:y>256</pd:y>
         <config>
             <timeout>10</timeout>
             <commit>false</commit>
@@ -84,8 +84,8 @@
     <pd:activity name="Exists-in-UVM">
         <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
         <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
-        <pd:x>347</pd:x>
-        <pd:y>72</pd:y>
+        <pd:x>360</pd:x>
+        <pd:y>149</pd:y>
         <config>
             <timeout>10</timeout>
             <commit>false</commit>
@@ -117,8 +117,8 @@
     <pd:activity name="GetCveBank Banner UNITEC">
         <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
         <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
-        <pd:x>509</pd:x>
-        <pd:y>201</pd:y>
+        <pd:x>510</pd:x>
+        <pd:y>260</pd:y>
         <config>
             <timeout>%%ProjConfig/DBConnectionUNITEC/timeout%%</timeout>
             <commit>false</commit>
@@ -165,8 +165,8 @@
     <pd:activity name="GetCveBank Banner UVM">
         <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
         <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
-        <pd:x>507</pd:x>
-        <pd:y>80</pd:y>
+        <pd:x>503</pd:x>
+        <pd:y>151</pd:y>
         <config>
             <timeout>%%ProjConfig/DBConnectionUNITEC/timeout%%</timeout>
             <commit>false</commit>
@@ -216,7 +216,9 @@
         <pd:xpathDescription>UVM</pd:xpathDescription>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>otherwise</pd:conditionType>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/cuenta_bancaria=$_globalVariables/pfx:GlobalVariables/ProjConfig/Accounts/UVM and 
+$_globalVariables/pfx:GlobalVariables/ProjConfig/isOnUVM = "true"</pd:xpath>
     </pd:transition>
     <pd:transition>
         <pd:from>Exists in UNITEC</pd:from>
@@ -254,5 +256,12 @@
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
     </pd:transition>
 </pd:ProcessDefinition>

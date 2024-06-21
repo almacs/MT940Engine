@@ -8,9 +8,9 @@
         <processArchive name="Process Archive">
             <resourceType>process.archive.resource</resourceType>
             <authorProperty>acarvajals</authorProperty>
-            <processProperty>/Processes/Starter Processes/MT950TimerStarter.process,/Processes/Starter Processes/SaveInfoInDBBatch.process</processProperty>
+            <processProperty>/Processes/Starter Processes/SaveInfoInDBBatch.process,/Processes/Starter Processes/MT940TimerStarter.process</processProperty>
         </processArchive>
-        <versionProperty>2</versionProperty>
+        <versionProperty>11</versionProperty>
         <authorProperty>acarvaja</authorProperty>
         <addServiceSettableGvars>true</addServiceSettableGvars>
         <name>MT940Engine</name>

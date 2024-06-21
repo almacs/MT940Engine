@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>JDBC-Connection DBTABCTRL</name>
+    <resourceType>ae.shared.JDBCSharedResource</resourceType>
+    <config>
+        <driver>tibcosoftwareinc.jdbc.oracle.OracleDriver</driver>
+        <maxConnections>10</maxConnections>
+        <loginTimeout>%%ProjConfig/DBTABCTRL/timeout%%</loginTimeout>
+        <connectionType>JDBC</connectionType>
+        <UseSharedJndiConfig>false</UseSharedJndiConfig>
+        <location>%%ProjConfig/DBTABCTRL/url%%</location>
+        <user>%%ProjConfig/DBTABCTRL/user%%</user>
+        <password>%%ProjConfig/DBTABCTRL/pass%%</password>
+    </config>
+</BWSharedResource>
